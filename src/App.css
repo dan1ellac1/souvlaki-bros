@@ -1,0 +1,18 @@
+.image-calibration{
+  width: 30%;
+}
+
+.under-nav{
+  background-image: url("../src/components/under-nav.jpg");
+}
+
+.under-nav-calibration{
+  width: 90%;
+  z-index: -1;
+  padding: 5%;
+}
+
+.map-calibration{
+  width: 50%;
+  border-radius: 5px;
+}
