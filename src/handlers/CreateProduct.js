@@ -25,7 +25,7 @@ export const CreateProduct = ({products, setProducts}) => {
             <input className='mb-2 border rounded-md border-black pl-1' type="text" onChange={(e) => setProductName(e.target.value)} value={productName} placeholder='Place name' name='name'/>
             <label>Product Description:</label>
             <input className='mb-2 border rounded-md border-black pl-1' type="text" onChange={(e) => setProductDescription(e.target.value)} value={productDescription} placeholder='Place Description' name='description'/>
-            <button type='submit' className='mt-4 border border-black rounded-lg text-orange-400 font-bold bg-black hover:bg-orange-400
+            <button type='submit' className='mt-4 border border-black rounded-lg text-[#e8a033] font-bold bg-black hover:bg-[#e8a033]
             hover:text-black pt-1 pb-1'>Create product</button>
           </div>
         </form>

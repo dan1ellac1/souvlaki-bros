@@ -4,26 +4,25 @@ import React, { useState } from 'react'
 import { FullMenu } from '../Menu/FullMenu'
 import { CreateProduct } from '../handlers/CreateProduct'
 
-export const ProductList = () => {
+export const ProductList = (adminCheck, setAdminCheck) => {
 
-  const [isAdmin, setIsAdmin] = useState(true)
   const [products, setProducts] = useState([])
 
   const handleAdmin = () =>{
-    setIsAdmin(!isAdmin)
+    setAdminCheck(!adminCheck)
   }
 
   return (
     <>
     <Header />
     <main>
-      {isAdmin ? (
+      {adminCheck ? (
         <button type='button' onClick={handleAdmin}>toggle</button>
       )
     :
     ""}
 
-    {isAdmin ? (
+    {adminCheck ? (
       <CreateProduct products={products} setProducts={setProducts}/>
     ) :
     ""}
