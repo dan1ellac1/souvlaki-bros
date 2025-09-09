@@ -1,6 +1,7 @@
 import React from 'react'
 import {Routes, Route} from 'react-router-dom'
 import { Home, ProductInfo, ProductList, AboutUs, Contact, OrderNow } from '../pages'
+import { Write } from '../components/Write';
 
 export const AllRoutes = () => {
   return (
@@ -11,6 +12,7 @@ export const AllRoutes = () => {
         <Route path='/products/id:' element={<ProductInfo />} />
         <Route path='/products' element={<ProductList />} />
         <Route path='/order-now' element={<OrderNow />} />
+        <Route path='/write' element={<Write />}/>
     </Routes>
   )
 }
