@@ -3,8 +3,8 @@ import { Header } from '../components/Header'
 import { Footer } from '../components/Footer'
 import UnderNav from "../components/under-nav.jpg"
 import { Link } from 'react-router-dom'
-import { ProductList } from './ProductList'
 import BrosLogo from "../components/bros-map.png"
+import ProductShowcase from './ProductShowcase'
 
 export const Home = () => {
   return (
@@ -24,7 +24,7 @@ export const Home = () => {
         </section>
 
         <section className='m-9 '>
-          <ProductList/>
+          <ProductShowcase/>
         </section>
 
         <section className='m-9 bg-[#e8a033] border rounded-xl'>

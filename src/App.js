@@ -5,7 +5,7 @@ import { useState } from 'react';
 
 function App() {
 
-  const [adminCheck, setAdminCheck] = useState(false)
+  const [adminCheck, setAdminCheck] = useState(true)
 
   return (
     <>
