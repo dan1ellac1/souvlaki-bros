@@ -2,12 +2,21 @@ import React, { useState } from 'react'
 import app from "../firebaseConfig"
 import { getDatabase, ref, push, set } from 'firebase/database'
 
-export const CreateProduct = () => {
+export const CreateProduct = ({savedData}) => {
   const [inputValue1, setInputValue1] = useState("")
   const [inputValue2, setInputValue2] = useState("")
   const [inputCategory, setInputCategory] = useState("")
 
-  const savedData = async () => {
+  const handleSave = async () => {
+    if (!inputValue1) {
+      alert("Please place product Name")
+      return
+    }
+    if (!inputValue2) {
+      alert("Please set description")
+      return
+    }
+
     if (!inputCategory) {
       alert("Please select a category")
       return
@@ -26,6 +35,7 @@ export const CreateProduct = () => {
         setInputValue1("")
         setInputValue2("")
         setInputCategory("")
+        savedData && savedData()
       })
       .catch((error) => {
         alert("Error: " + error.message)
@@ -41,12 +51,13 @@ export const CreateProduct = () => {
         type="text"
         value={inputValue1}
         onChange={e => setInputValue1(e.target.value)}
+        required
       />
       <br />
       </div>
       <div className='p-1'>
       <label>Description of product:</label>
-      <input className='pl-2 rounded-md ml-1' 
+      <input required className='pl-2 rounded-md ml-1' 
         type="text" 
         value={inputValue2}
         onChange={e => setInputValue2(e.target.value)}
@@ -55,23 +66,23 @@ export const CreateProduct = () => {
       </div>
       <div className='p-1'>
       <label>Category:</label>
-      <select className='pl-2 rounded-md ml-1'
+      <select required className='pl-2 rounded-md ml-1'
         value={inputCategory}
         onChange={e => setInputCategory(e.target.value)}
       >
         <option value="">Select category</option>
-        <option value="specialities">Bros Specialities</option>
-        <option value="chickenProducts">Chicken Products</option>
-        <option value="porkProducts">Pork Products</option>
-        <option value="gyro">Gyro</option>
-        <option value="kitchen">Kitchen</option>
-        <option value="kitchen/pasta">Pasta</option>
-        <option value="kitchen/salads">Salads</option>
+        <option value="Bros Specialities">Bros Specialities</option>
+        <option value="Chicken Products">Chicken Products</option>
+        <option value="Pork Products">Pork Products</option>
+        <option value="Gyro">Gyro</option>
+        <option value="Kitchen">Kitchen</option>
+        <option value="Pasta">Pasta</option>
+        <option value="Salads">Salads</option>
       </select>
       <br />
       </div>
 
-      <button className='mt-2 bg-black text-[#e8a033] pl-4 pr-4 rounded-md' onClick={savedData}>Save Data</button>
+      <button className='mt-2 bg-black text-[#e8a033] pl-4 pr-4 rounded-md' onClick={handleSave}>Save Data</button>
     </div>
   )
 }
