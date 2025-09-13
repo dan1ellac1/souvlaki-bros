@@ -1,3 +1,21 @@
+/* index.css */
+
+
+@font-face {
+  font-family: "helvetica";
+  src: url("./assets/fonts/Helvetica-Oblique.ttf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+  font-family: "helvetica", serif;
+}
+
+
+
+
+
 .image-calibration{
   width: 30%;
 }

@@ -1,6 +1,7 @@
 import React from "react";
 import app from "../firebaseConfig";
 import { getDatabase, ref, remove } from "firebase/database";
+import { DeleteOutlined } from "@ant-design/icons";
 
 export const DeleteProduct = ({ category, productId, onDeleted }) => {
   const handleDelete = () => {
@@ -22,9 +23,9 @@ export const DeleteProduct = ({ category, productId, onDeleted }) => {
   return (
     <button
       onClick={handleDelete}
-      className="ml-2 bg-red-600 text-white px-3 py-1 rounded"
+      className="ml-2 bg-red-600 border-red-500 border-[2px] text-white px-3 py-1 rounded"
     >
-      Delete
+      <DeleteOutlined />
     </button>
   );
 };
