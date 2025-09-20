@@ -68,7 +68,7 @@ export const FullMenu = ({ savedData }) => {
     if (!category) return <div className="p-6"></div>; // empty slot
 
     return (
-      <div key={category} className="p-6 border rounded border-color-[#dcdcdc] border-[3px]">
+      <div key={category} className="p-6 border rounded border-color-[#dcdcdc] border-[5px]">
         <h1 className="text-3xl font-bold mb-2">{category}</h1>
         <ul>
           {Object.entries(items).map(([productId, item]) => (
