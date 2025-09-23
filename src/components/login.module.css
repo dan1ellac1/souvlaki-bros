@@ -1,0 +1,20 @@
+.loginDiv{
+    margin: 0;
+    min-height: 100vh;
+    background: #751900;
+  background: linear-gradient(90deg, rgba(117, 25, 0, 0.72) 0%, rgba(255, 111, 0, 1) 100%);
+  }
+
+.loginManeuvers{
+  display: flex;
+  flex-direction: column;
+  justify-content:space-around ;
+  height: 90vh;
+}
+
+.loginSquare{
+    text-align: center;
+    background-color: white;
+    width: 30%;
+    margin-left: 34%;
+}

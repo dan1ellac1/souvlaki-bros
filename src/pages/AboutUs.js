@@ -2,7 +2,9 @@ import React from 'react'
 import { Header } from '../components/Header'
 import { Footer } from '../components/Footer'
 import { Link } from 'react-router-dom'
-import One from "../components/IMAGES/WhatsApp Image 2025-09-20 at 10.18.17 PM.jpeg"
+import One from "../components/IMAGES/pjat e lezetshme.jpg"
+import Two from "../components/IMAGES/aboutus 1.webp"
+import Placeholder from "../components/IMAGES/new ring placeholder.jpeg"
 export const AboutUs = () => {
   return (
     <>
@@ -10,13 +12,13 @@ export const AboutUs = () => {
     <main className='ml-7 mr-7'>
       <section className='flex flex-row m-9 font-bold bg-[#e8a033] border rounded-xl'>
         <div className='m-5 flex flex-row justify-evenly'>
+        <img className='one-calibration' src={One} alt='' />
           <div>  <h1 className='text-center text-3xl'>Welcome to Souvlaki Bros!</h1>
-            <p className='m-5'>
+            <p className='m-5 pt-4 '>
             Founded in 2019 in the heart of Kashar, Tirana, Souvlaki Bros has quickly grown to become a cornerstone of the fast-food scene in the Astir province.
 What started as a humble dream to bring authentic Greek street flavors to Albania has now become a trusted name, known for its fresh ingredients, unmatched taste, 
 and community-first values.</p>
             </div>
-           <img className='' src={One} alt='' />
           </div>
       </section>
 
@@ -32,7 +34,7 @@ Greek specialties, from rich pastas and creamy risottos to comforting homemade s
 We pride ourselves on being the first to truly imitate and master the unique flavors of Greece, offering a dining experience that’s both familiar and unforgettable.  
               </p>
             </div>
-           <img src='' alt='' />
+           <img src={Two} alt='two' />
           </div>
       </section>
 
@@ -44,7 +46,7 @@ In the Heart of the New Tirana Ring</h1>
            Located in the vibrant New Tirana Ring, Souvlaki Bros sits at the crossroads of modern living and traditional taste. Whether you're a local resident or just passing through,
 our restaurant is easy to find, always welcoming, and full of flavor.</p>
             </div>
-           <img src='' alt='' />
+           <img src={Placeholder} alt='' />
           </div>
       </section>
 

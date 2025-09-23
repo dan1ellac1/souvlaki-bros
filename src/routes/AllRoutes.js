@@ -3,10 +3,13 @@ import {Routes, Route} from 'react-router-dom'
 import { Home, ProductInfo, ProductList, AboutUs, Contact, OrderNow } from '../pages'
 import { Write } from '../components/Write';
 import { Read } from '../components/Read';
+import { Login } from '../components/Login';
+
 
 export const AllRoutes = ({adminCheck, setAdminCheck}) => {
   return (
     <Routes>
+        <Route path='/login' element={<Login />} />
         <Route path='/' element={<Home />} />
         <Route path='/about-us' element={<AboutUs />} />
         <Route path='/contact' element={<Contact />} />

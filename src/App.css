@@ -1,5 +1,4 @@
-/* index.css */
-
+/*app.css*/
 
 @font-face {
   font-family: "";
@@ -8,12 +7,16 @@
   font-style: normal;
 }
 
+
 body {
   font-family: "helvetica", serif;
+  background-color: white;
 }
 
 
-
+.one-calibration{
+  height: 34vh;
+}
 
 
 .image-calibration{
