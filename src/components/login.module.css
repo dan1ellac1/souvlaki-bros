@@ -1,8 +1,8 @@
 .loginDiv{
     margin: 0;
     min-height: 100vh;
-    background: #751900;
-  background: linear-gradient(90deg, rgba(117, 25, 0, 0.72) 0%, rgba(255, 111, 0, 1) 100%);
+    background: #914600;
+  background: linear-gradient(90deg, rgba(87, 28, 12, 0.72) 0%, rgb(255, 111, 0) 100%);
   }
 
 .loginManeuvers{
@@ -19,6 +19,6 @@
   border-radius: 3px;
     text-align: center;
     background-color: white;
-    width: 30%;
-    margin-left: 34%;
+    width: 25%;
+    margin-left: 37.5%;
 }
