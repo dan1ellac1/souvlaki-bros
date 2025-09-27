@@ -1,7 +1,7 @@
 import { Header } from '../components/Header'
 import { Footer } from '../components/Footer'
 import { FullMenu } from '../Menu/FullMenu'
-import { CreateProduct } from '../handlers/CreateProduct'
+import { Write } from '../components/Write'
 import {React, useState} from 'react'
 
 export const ProductList = ({ adminCheck }) => {
@@ -15,7 +15,7 @@ export const ProductList = ({ adminCheck }) => {
     <>
       <Header />
       <main>
-        {adminCheck && <CreateProduct savedData={handleSavedData} />}
+        {adminCheck && <Write savedData={handleSavedData} />}
         <FullMenu savedData={refreshTrigger} />
       </main>
       <Footer />

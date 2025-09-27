@@ -1,61 +1,100 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from "react"
+import { getAuth, onAuthStateChanged } from "firebase/auth"
+import { getDatabase, ref, get, push, set } from "firebase/database"
 import app from "../firebaseConfig"
-import { getDatabase, ref, push, set } from 'firebase/database'
 
 export const Write = () => {
-  const [inputValue1, setInputValue1] = useState("")
-  const [inputValue2, setInputValue2] = useState("")
-  const [inputCategory, setInputCategory] = useState("")
+  const [user, setUser] = useState(null)
+  const [role, setRole] = useState(null)
+  const [loading, setLoading] = useState(true)
 
-  const savedData = async () => {
-    if (!inputCategory) {
+  const [productName, setProductName] = useState("")
+  const [productDescription, setProductDescription] = useState("")
+  const [category, setCategory] = useState("")
+
+  // 🧠 Check auth state and get role when user changes
+  useEffect(() => {
+    const auth = getAuth(app)
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      setUser(currentUser)
+
+      if (currentUser) {
+        // Fetch role from DB
+        const db = getDatabase(app)
+        const roleRef = ref(db, "users/" + currentUser.uid)
+        const snapshot = await get(roleRef)
+
+        if (snapshot.exists()) {
+          setRole(snapshot.val().role)
+        } else {
+          setRole("user") // fallback if no role found
+        }
+      } else {
+        setRole(null)
+      }
+
+      setLoading(false)
+    })
+
+    return () => unsubscribe()
+  }, [])
+
+  // ✍️ Save product if admin
+  const saveProduct = async () => {
+    if (!category) {
       alert("Please select a category")
       return
     }
 
-    const db = getDatabase(app);
-    const categoryRef = ref(db, `/products/${inputCategory}`);
-    const newDocRef = push(categoryRef);
+    const db = getDatabase(app)
+    const categoryRef = ref(db, `/products/${category}`)
+    const newDocRef = push(categoryRef)
 
-    set(newDocRef, {
-      productName: inputValue1,
-      productDescription: inputValue2
+    await set(newDocRef, {
+      productName,
+      productDescription,
     })
-      .then(() => {
-        alert("Data saved successfully")
-        setInputValue1("")
-        setInputValue2("")
-        setInputCategory("")
-      })
-      .catch((error) => {
-        alert("Error: " + error.message)
-      })
+
+    alert("Product added successfully!")
+    setProductName("")
+    setProductDescription("")
+    setCategory("")
   }
 
+  // 🕐 While checking auth state
+  if (loading) return <p>Loading...</p>
+
+  // 🚫 Not logged in
+  if (!user) return <p>Please log in to access this page.</p>
+
+  // 🚫 Logged in but not admin
+  if (role !== "admin") return ;
+
+  // ✅ Logged in & admin — show the form
   return (
     <div>
-      <h1>Insert Item in menu:</h1>
-      
-      <label>Name of product:</label>
+      <h1>Add Product</h1>
+
+      <label>Product Name:</label>
       <input
         type="text"
-        value={inputValue1}
-        onChange={e => setInputValue1(e.target.value)}
+        value={productName}
+        onChange={(e) => setProductName(e.target.value)}
       />
       <br />
 
-      <label>Description of product:</label>
+      <label>Description:</label>
       <input
         type="text"
-        value={inputValue2}
-        onChange={e => setInputValue2(e.target.value)}
+        value={productDescription}
+        onChange={(e) => setProductDescription(e.target.value)}
       />
       <br />
 
       <label>Category:</label>
       <select
-        value={inputCategory}
-        onChange={e => setInputCategory(e.target.value)}
+        value={category}
+        onChange={(e) => setCategory(e.target.value)}
       >
         <option value="">Select category</option>
         <option value="specialities">Bros Specialities</option>
@@ -68,7 +107,7 @@ export const Write = () => {
       </select>
       <br />
 
-      <button onClick={savedData}>Save Data</button>
+      <button onClick={saveProduct}>Save Product</button>
     </div>
   )
 }
