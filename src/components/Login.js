@@ -9,6 +9,7 @@ import app from "../firebaseConfig"
 export const Login = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [guest, setGuest] = useState(false)
  // ...
 const navigate = useNavigate();
 
@@ -24,21 +25,14 @@ const handleLogin = async (e) => {
 };
   
 
+  
+
   return (
     <div className={styles.loginDiv}>
       <div className={styles.loginManeuvers}>
         <div></div>
         <div className={styles.loginSquare}>
           <form className="flex flex-col m-4" onSubmit={handleLogin}>
-            <Link
-              className="mt-10 bg-[#e76a12] p-4 font-bold text-white rounded border-[#dcdcdc]"
-              to="/"
-            >
-              Continue as Guest
-            </Link>
-
-            <h1 className="p-5 font-bold">or</h1>
-
             <Input
               className="border-[2px] mt-2 text-black p-4 mr-2 rounded border-[#e76a12] text-xl"
               type="text"
@@ -70,6 +64,16 @@ const handleLogin = async (e) => {
             >
               Log In
             </button>
+
+            <h1 className="p-5 font-bold">or</h1>
+            
+            <Link
+              onClick={() => setGuest(true)}
+              className=" bg-[#e76a12] p-4 font-bold text-white rounded border-[#dcdcdc]"
+              to="/"
+            >
+              Continue as Guest
+            </Link>
           </form>
         </div>
         <div></div>

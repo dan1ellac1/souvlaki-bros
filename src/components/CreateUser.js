@@ -1,14 +1,15 @@
-// ✅ CreateUser.js (no admin restriction)
 import React, { useState } from "react"
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth"
 import { getDatabase, ref, set } from "firebase/database"
+import styles from "./login.module.css"
 import app from "../firebaseConfig"
+import { Input } from "antd"
+import { Link } from "react-router-dom"
 
 export const CreateUser = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [username, setUsername] = useState("")
-  const [newUserRole, setNewUserRole] = useState("user")
 
   const handleCreateUser = async () => {
     try {
@@ -16,51 +17,62 @@ export const CreateUser = () => {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password)
       const createdUser = userCredential.user
 
-      // store additional info
       const db = getDatabase(app)
       await set(ref(db, "users/" + createdUser.uid), {
         username,
         email,
-        role: newUserRole,
+        role: "user",
       })
 
       alert("User created successfully!")
       setEmail("")
       setPassword("")
       setUsername("")
-      setNewUserRole("user")
     } catch (err) {
       alert("Error: " + err.message)
     }
   }
 
   return (
-    <div>
-      <h1>Create a New Account</h1>
-
-      <label>Username:</label>
-      <input value={username} onChange={(e) => setUsername(e.target.value)} />
+    <div  className={styles.loginDiv}>
+      <div className={styles.loginManeuvers}>
+      <div></div>
+      <div  className={styles.loginSquare}>
+        <div className="flex flex-col m-4">
+      <Input  className="border-[2px] mt-2 text-black p-4 mr-2 rounded border-[#e76a12] text-xl"
+      type="text"   value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Username" />
       <br />
 
-      <label>Email:</label>
-      <input value={email} onChange={(e) => setEmail(e.target.value)} />
+      <Input className="border-[2px] mt-2 text-black p-4 mr-2 rounded border-[#e76a12] text-xl" 
+       value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" />
       <br />
-
-      <label>Password:</label>
-      <input
+      <Input
+       className="border-[2px] mt-2 text-black p-4 mr-2 rounded border-[#e76a12] text-xl"
         type="password"
         value={password}
-        onChange={(e) => setPassword(e.target.value)}
+        onChange={(e) => setPassword(e.target.value)
+          
+        }
+        placeholder="Password"
       />
       <br />
+      <Input  className="border-[2px] mt-2 text-black p-4 mr-2 rounded border-[#e76a12] text-xl" value="User" disabled />
 
-      <label>Role:</label>
-      <select value={newUserRole} onChange={(e) => setNewUserRole(e.target.value)}>
-        <option value="user">User</option>
-        <option value="admin">Admin</option>
-      </select>
+      <button className="mt-10 bg-[#e76a12] p-4 font-bold text-white rounded border-[#dcdcdc]"
+       onClick={handleCreateUser}>Create Account</button>
 
-      <button onClick={handleCreateUser}>Create Account</button>
+       <Link
+                     className=" mt-2 bg-[#e76a12] p-4 font-bold text-white rounded border-[#dcdcdc]"
+                     to="/login"
+                   >
+                    Return to Login
+        </Link>
+      </div>
+      </div>
+      
+      <div></div>
+      </div>
     </div>
+    
   )
 }
