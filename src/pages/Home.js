@@ -10,7 +10,7 @@ import { getDatabase, ref, get } from "firebase/database";
 import { getAuth, signOut } from "firebase/auth";
 import app from "../firebaseConfig";
 
-export const Home = ({ user }) => {
+export const Home = ({ user, setGuest, guest }) => {
   const [username, setUsername] = useState("");
   const navigate = useNavigate();
 
@@ -35,22 +35,18 @@ export const Home = ({ user }) => {
   const handleLogout = async () => {
     const auth = getAuth(app);
     await signOut(auth);
+    setGuest(false)
     navigate("/login"); // redirect to login
   };
 
   return (
     <>
-      <Header />
+      <Header handleLogout={handleLogout} setGuest={setGuest} guest={guest} user={user}/>
       <main className="ml-7 mr-7">
         {/* Welcome and Logout */}
         <div className="flex justify-between items-center m-9">
-          <h2 className="text-3xl font-bold">Welcome, {username}!</h2>
-          <button
-            onClick={handleLogout}
-            className="bg-red-600 text-white px-4 py-2 rounded"
-          >
-            Logout
-          </button>
+          <h2 className="text-3xl font-bold">Welcome {username}!</h2>
+          
         </div>
 
         <section className="flex flex-row m-9 font-bold bg-[#e8a033] border rounded-xl">

@@ -22,3 +22,14 @@
     width: 25%;
     margin-left: 37.5%;
 }
+
+.redirectSquare{
+  color: #e76a12;
+  border: 3px #dcdcdc solid;
+  background-color: #dcdcdc;
+  border-radius: 3px;
+    text-align: center;
+    background-color: white;
+    width: 50%;
+    margin-left: 24.7%;
+}

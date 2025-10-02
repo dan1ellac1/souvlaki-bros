@@ -6,10 +6,11 @@ import { UserOutlined, LockOutlined } from "@ant-design/icons"
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth"
 import app from "../firebaseConfig"
 
-export const Login = () => {
+export const Login = ({setGuest, guest}) => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [guest, setGuest] = useState(false)
+
+  
  // ...
 const navigate = useNavigate();
 
@@ -19,10 +20,13 @@ const handleLogin = async (e) => {
     const auth = getAuth(app);
     await signInWithEmailAndPassword(auth, email, password);
     navigate("/"); // redirect to home
+    setGuest(false)
   } catch (err) {
     alert("Error: " + err.message);
   }
 };
+
+
   
 
   

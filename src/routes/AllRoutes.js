@@ -7,12 +7,13 @@ import { Login } from '../components/Login';
 import { CreateUser } from '../components/CreateUser';
 import { CreateProduct } from "../handlers/CreateProduct";
 import { Navigate } from "react-router-dom";
+import { Redirect } from "../pages/Redirect";
 
 
-export const AllRoutes = ({adminCheck, setAdminCheck, guest}) => {
+export const AllRoutes = ({adminCheck, setAdminCheck}) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  console.log(guest)
+  const [guest, setGuest] = useState(false)
 
   useEffect(() => {
     const auth = getAuth(app);
@@ -30,20 +31,21 @@ export const AllRoutes = ({adminCheck, setAdminCheck, guest}) => {
     <Routes>
         <Route
           path="/login"
-          element={user ? <Navigate to="/" /> : <Login />}
+          element={user ? <Navigate to="/" /> : <Login setGuest={setGuest} guest={guest} />}
         />
         <Route
           path="/"
-          element={guest ? (<Navigate to="/" />) : (user ? <Home user={user} /> : <Navigate to="/login" />)}
+          element={(user||guest) ? <Home user={user} setGuest={setGuest} guest={guest}/> : <Navigate to="/login" />}
         />
         <Route
           path="/create-product"
           element={user ? <CreateProduct /> : <Navigate to="/login" />}
         />
-        <Route path='/about-us' element={<AboutUs /> } />
-        <Route path='/products' element={user ?<ProductList adminCheck={adminCheck} setAdminCheck={setAdminCheck} /> : <Navigate to ="/login"/>} />
-        <Route path='/order-now' element={user ? <OrderNow /> : <Navigate to ="/login"/>} />
+        <Route path='/about-us' element={<AboutUs guest={guest} setGuest={setGuest}/> } />
+        <Route path='/products' element={(user||guest) ?<ProductList adminCheck={adminCheck} setAdminCheck={setAdminCheck} setGuest={setGuest} guest={guest}/> : <Navigate to ="/login"/>} />
+        <Route path='/order' element={user ? <OrderNow guest={guest} setGuest={setGuest}/> : <Navigate to ="/redirect" />} />
         <Route path='/create-user' element={<CreateUser />}/>
+        <Route path='/redirect' element={<Redirect setGuest={setGuest}/>}/>
     </Routes>
   )
 }

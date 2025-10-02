@@ -65,7 +65,7 @@ export const Write = () => {
   if (loading) return <p>Loading...</p>
 
   // 🚫 Not logged in
-  if (!user) return <p>Please log in to access this page.</p>
+  if (!user) return <p className="p-3 m-11">Log In to Order Now!</p>
 
   // 🚫 Logged in but not admin
   if (role !== "admin") return ;

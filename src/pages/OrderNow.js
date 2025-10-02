@@ -1,7 +1,11 @@
 import React from 'react'
+import { Header } from '../components/Header'
 
-export const OrderNow = () => {
+export const OrderNow = ({setGuest, guest}) => {
   return (
-    <div>OrderNow</div>
+    <>
+     <Header setGuest={setGuest} guest={guest}/>
+     
+    </>
   )
 }

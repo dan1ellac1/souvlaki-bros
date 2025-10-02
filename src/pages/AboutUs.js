@@ -5,10 +5,10 @@ import { Link } from 'react-router-dom'
 import One from "../components/IMAGES/pjat e lezetshme.jpg"
 import Two from "../components/IMAGES/aboutus 1.webp"
 import Placeholder from "../components/IMAGES/new ring placeholder.jpeg"
-export const AboutUs = () => {
+export const AboutUs = ({guest, setGuest}) => {
   return (
     <>
-    <Header />
+    <Header setGuest={setGuest} guest={guest}/>
     <main className='ml-7 mr-7'>
       <section className='flex flex-row m-9 font-bold bg-[#e8a033] border rounded-xl'>
         <div className='m-5 flex flex-row justify-evenly'>
@@ -52,9 +52,7 @@ our restaurant is easy to find, always welcoming, and full of flavor.</p>
 
       <section className='m-9 border rounded border-color-[#dcdcdc] border-[5px]'>
           <div className='p-5 text-center'>
-            <p className='font-bold  text-3xl'>Service That Delivers
-Service That Delivers
-</p>
+            <p className='font-bold  text-3xl'>Service That Delivers</p>
             <p className='text-xl m-4 '>Too busy to visit? No problem. Our delivery service is one of the best in the area — fast, reliable, and always bringing your order hot and fresh, straight to your door.</p>
 
             <Link className='m-4 p-1 px-5 bg-[#e8a033] text-xl font-bold rounded-xl' to='/order-now'>Order Now</Link>
