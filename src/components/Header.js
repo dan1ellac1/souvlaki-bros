@@ -19,7 +19,7 @@ export const Header = ({setGuest, guest}) => {
     navigate("/login"); // redirect to login
   };
   return (
-    <header className='bg-black h-[10%]'>
+    <header className='bg-[#0d0304] h-[10%]'>
       <nav className='flex  justify-around
 '>
         <div>
@@ -34,9 +34,9 @@ export const Header = ({setGuest, guest}) => {
           <Link className='p-1 pl-6 hover:text-white' to="/order">Order Now!</Link>
           <button
             onClick={handleLogout}
-            className="bg-black text-white px-8 ml-4"
-          >
-            {guest ? <UserOutlined /> : <PoweroffOutlined /> }
+            className="bg-[#0d0304] text-white px-8 ml-4"
+          > 
+            {guest ? < UserOutlined className='bg-[#0d0304]'/> : <PoweroffOutlined className='bg-[#0d0304]'/> }
           </button>
         </div>
       </nav>

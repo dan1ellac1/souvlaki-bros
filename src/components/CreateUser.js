@@ -10,6 +10,7 @@ export const CreateUser = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [username, setUsername] = useState("")
+  const [number, setNumber] = useState("")
 
   const handleCreateUser = async () => {
     try {
@@ -21,6 +22,7 @@ export const CreateUser = () => {
       await set(ref(db, "users/" + createdUser.uid), {
         username,
         email,
+        number,
         role: "user",
       })
 
@@ -28,6 +30,7 @@ export const CreateUser = () => {
       setEmail("")
       setPassword("")
       setUsername("")
+      setNumber("")
     } catch (err) {
       alert("Error: " + err.message)
     }
@@ -55,6 +58,17 @@ export const CreateUser = () => {
         }
         placeholder="Password"
       />
+
+      <Input
+       className="border-[2px] mt-2 text-black p-4 mr-2 rounded border-[#e76a12] text-xl"
+        type="number"
+        value={number}
+        onChange={(e) => setNumber(e.target.value)
+          
+        }
+        placeholder="Phone Number"
+      />
+
       <br />
       <Input  className="border-[2px] mt-2 text-black p-4 mr-2 rounded border-[#e76a12] text-xl" value="User" disabled />
 
