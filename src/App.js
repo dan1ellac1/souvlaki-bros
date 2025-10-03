@@ -1,6 +1,7 @@
 import './App.css';
 import { AllRoutes } from './routes/AllRoutes';
 import { useState } from 'react';
+import { SnackbarProvider } from "notistack"
 
 
 function App() {
@@ -9,7 +10,9 @@ function App() {
 
   return (
     <>
-      <AllRoutes adminCheck={adminCheck} setAdminCheck={setAdminCheck} />
+      <SnackbarProvider>
+        <AllRoutes adminCheck={adminCheck} setAdminCheck={setAdminCheck} />
+      </SnackbarProvider>
     </>
   );
 }

@@ -5,12 +5,17 @@ import styles from "./login.module.css"
 import app from "../firebaseConfig"
 import { Input } from "antd"
 import { Link } from "react-router-dom"
+import { useSnackbar } from "notistack"
+import { useNavigate } from "react-router-dom"
 
 export const CreateUser = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [username, setUsername] = useState("")
   const [number, setNumber] = useState("")
+
+  const {enqueueSnackbar} = useSnackbar()
+  const navigate = useNavigate();
 
   const handleCreateUser = async () => {
     try {
@@ -26,13 +31,21 @@ export const CreateUser = () => {
         role: "user",
       })
 
-      alert("User created successfully!")
+      enqueueSnackbar("User created successfully!",{
+        variant:"success"
+      })  
       setEmail("")
       setPassword("")
       setUsername("")
       setNumber("")
+      navigate('/')
+      
     } catch (err) {
-      alert("Error: " + err.message)
+      enqueueSnackbar(`${err.message}`,
+        {
+          variant:"error"
+        }
+      )
     }
   }
 
@@ -47,7 +60,7 @@ export const CreateUser = () => {
       <br />
 
       <Input className="border-[2px] mt-2 text-black p-4 mr-2 rounded border-[#e76a12] text-xl" 
-       value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" />
+       type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" />
       <br />
       <Input
        className="border-[2px] mt-2 text-black p-4 mr-2 rounded border-[#e76a12] text-xl"
