@@ -10,6 +10,7 @@ import { getDatabase, ref, get } from "firebase/database";
 import { getAuth, signOut } from "firebase/auth";
 import app from "../firebaseConfig";
 
+
 export const Home = ({ user, setGuest, guest }) => {
   const [username, setUsername] = useState("");
   const navigate = useNavigate();
@@ -22,7 +23,7 @@ export const Home = ({ user, setGuest, guest }) => {
         const userRef = ref(db, "users/" + user.uid);
         const snap = await get(userRef);
         if (snap.exists()) {
-          setUsername(snap.val().username);
+          setUsername(snap.val().username); // <-- match the field name you saved
         } else {
           setUsername("User");
         }
@@ -35,10 +36,11 @@ export const Home = ({ user, setGuest, guest }) => {
   const handleLogout = async () => {
     const auth = getAuth(app);
     await signOut(auth);
-    setGuest(false)
     navigate("/login"); // redirect to login
+    setGuest(false)
   };
 
+  console.log(username)
   return (
     <>
       <Header handleLogout={handleLogout} setGuest={setGuest} guest={guest} user={user}/>

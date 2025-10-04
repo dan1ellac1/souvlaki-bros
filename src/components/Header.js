@@ -5,13 +5,30 @@ import { PoweroffOutlined, UserOutlined  } from '@ant-design/icons'
 import { getAuth, signOut } from "firebase/auth";
 import { useNavigate } from 'react-router-dom';
 import app from '../firebaseConfig';
+import { useSnackbar } from 'notistack';
 
 
-export const Header = ({setGuest, guest}) => {
+export const Header = ({user,guest, setGuest}) => {
 
 
   //logout experiment
   const navigate = useNavigate();
+  const {enqueueSnackbar} = useSnackbar()
+
+  const handleOrderGuest = (e) =>{
+    e.preventDefault();
+
+    if(!user){
+      enqueueSnackbar("Please Log in to order!",
+        {
+          variant:"warning"
+        }
+      )
+     navigate("/login")
+    }
+    else navigate('/order')
+  }
+
   const handleLogout = async () => {
     const auth = getAuth(app);
     await signOut(auth);
@@ -31,12 +48,12 @@ export const Header = ({setGuest, guest}) => {
           <Link className='p-1 pl-6 hover:text-white' to="/">Home</Link>
           <Link className='p-1 pl-6 hover:text-white' to="/about-us">About</Link>
           <Link className='p-1 pl-6 hover:text-white' to="/products">Menu</Link>
-          <Link className='p-1 pl-6 hover:text-white' to="/order">Order Now!</Link>
+          <Link className='p-1 pl-6 hover:text-white' to="/order" onClick={handleOrderGuest}>Order Now!</Link>
           <button
             onClick={handleLogout}
             className="bg-[#0d0304] text-white px-8 ml-4"
           > 
-            {guest ? < UserOutlined className='bg-[#0d0304]'/> : <PoweroffOutlined className='bg-[#0d0304]'/> }
+            {guest ? < UserOutlined className='bg-[#0d0304]' onClick={handleLogout}/> : <PoweroffOutlined className='bg-[#0d0304]' onClick={handleLogout}/> }
           </button>
         </div>
       </nav>

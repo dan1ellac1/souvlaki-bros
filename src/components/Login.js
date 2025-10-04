@@ -4,15 +4,17 @@ import { Link, useNavigate } from "react-router-dom";
 import Input from "antd/es/input/Input";
 import { UserOutlined, LockOutlined, GoogleOutlined } from "@ant-design/icons";
 import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import { doc, getDoc, setDoc } from "firebase/firestore";
-import { getDatabase } from "firebase/database";
+import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
+
 import app from "../firebaseConfig";
+import { useSnackbar } from "notistack"
 
 
-export const Login = ({ setGuest, guest }) => {
+export const Login = ({ setGuest, guest, setVerified }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const {enqueueSnackbar} = useSnackbar();
 
 
 
@@ -21,17 +23,38 @@ export const Login = ({ setGuest, guest }) => {
     e.preventDefault();
     try {
       const auth = getAuth(app);
-      await signInWithEmailAndPassword(auth, email, password);
-      navigate("/"); // redirect to home
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+  
+      // 🔥 Check email verification **immediately**
+      if (!user.emailVerified) {
+        enqueueSnackbar("Please verify your email before logging in.", {
+          variant: "warning",
+        });
+  
+        // Sign them out immediately so they don’t stay authenticated
+        await auth.signOut();
+  
+        // Redirect to verification page
+        navigate("/verify");
+        setVerified(false);
+        return;
+      }
+  
+      // ✅ Email is verified → proceed as normal
       setGuest(false);
+      setVerified(true);
+      enqueueSnackbar("Logged in successfully!", { variant: "success" });
+      navigate("/"); // or your main page
     } catch (err) {
-      alert("Error: " + err.message);
+      enqueueSnackbar("Error: " + err.message, {
+        variant: "error",
+      });
     }
   };
-
   // Google login
 
-  const db = getDatabase(app)
+  const db = getFirestore(app);
   const handleGoogleLogin = async () => {
     try {
       const auth = getAuth(app);
@@ -54,9 +77,17 @@ export const Login = ({ setGuest, guest }) => {
 
       navigate("/"); // redirect to home
       setGuest(false);
+      enqueueSnackbar("Logged in successfully", 
+        {
+          variant:"success"
+        }
+      )
     } catch (err) {
-      alert("Google login error: " + err.message);
-    }
+      enqueueSnackbar("Error: " + err.message,
+        {
+          variant:"error"
+        })
+      }
   };
 
   return (
