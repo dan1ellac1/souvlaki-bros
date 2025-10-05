@@ -32,9 +32,7 @@
           number,
           role: "user",
         })
-        enqueueSnackbar("User created successfully!",{
-          variant:"success"
-        })  
+          
         setEmail("")
         setPassword("")
         setUsername("")
