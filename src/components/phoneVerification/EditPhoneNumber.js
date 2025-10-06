@@ -1,14 +1,13 @@
 import { getDatabase, ref } from 'firebase/database';
-import React, { useState } from 'react'
 import app from '../../firebaseConfig';
 import { useNavigate } from 'react-router-dom';
 import { getAuth } from 'firebase/auth';
 import { useSnackbar } from 'notistack';
 import { update } from 'firebase/database';
+import { Input } from 'antd';
 
-export const EditPhoneNumber = () => {
+export const EditPhoneNumber = ({phoneNumber, setPhoneNumber}) => {
 
-  const [phoneNumber, setPhoneNumber] = useState("")
   const {enqueueSnackbar} = useSnackbar()
 
   const navigate = useNavigate()
@@ -42,11 +41,23 @@ export const EditPhoneNumber = () => {
   };
   
   return (
+    <>
     <div>
-      <form onSubmit={changeNumber}>
-        <input type="number" value={phoneNumber} onChange={(e)=>setPhoneNumber(e.target.value)}/>
-        <button type='submit'>Change Number</button>
-      </form>
+      
     </div>
+
+    <div className="flex flex-col items-center justify-center h-screen bg-[#f5f5f5]">
+      <div className="bg-white p-10 rounded-lg shadow-md text-center w-[400px]">
+        <h2 className="text-md mb-4 text-gray-600">NOTE! Placing your correct phone number will allow you to order from this
+          website!
+        </h2>
+        <form onSubmit={changeNumber}>
+        <Input type="number" placeholder={phoneNumber} value={phoneNumber} onChange={(e)=>setPhoneNumber(e.target.value)}/>
+        <button type='submit' className="w-full bg-[#e76a12] text-white font-bold py-2 rounded mb-3">Change phone number</button>
+      </form>
+
+        </div>
+    </div>
+    </>
   )
 }

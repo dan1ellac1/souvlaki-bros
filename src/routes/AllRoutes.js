@@ -77,15 +77,15 @@ export const AllRoutes = ({ adminCheck, setAdminCheck }) => {
         path="/products"
         element={(verified || guest) ? <ProductList user={user} adminCheck={adminCheck} setAdminCheck={setAdminCheck} setGuest={setGuest} guest={guest} /> : <Navigate to="/login" />}
       />
-      <Route
-        path="/order"
-        element={(verified && phoneVerified) ? <OrderNow user={user} guest={guest} setGuest={setGuest} phoneVerified={phoneVerified} /> : <Navigate to="/verify"/>}
-      />
+      <Route path="/order" element={verified ? phoneVerified 
+      ? <OrderNow user={user} guest={guest} setGuest={setGuest} phoneVerified={phoneVerified} />
+        : <Navigate to="/numberConfirmation" />
+      : <Navigate to="/verify" />} />
       <Route path="/create-user" element={<CreateUser />} />
       <Route path="/redirect" element={<Redirect setGuest={setGuest} />} />
       <Route path="/verify" element={<Verification setVerified={setVerified} />} />
       <Route path="/numberConfirmation" element={(verified && (!phoneVerified) )? <NumberConfirmation phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber} setPhoneVerified={setPhoneVerified} phoneVerified={phoneVerified} /> : <Navigate to="/" />}/>
-      <Route path="/editPhoneNumber" element={ (verified && !guest) ? <EditPhoneNumber phoneNumber={phoneNumber} user={user} /> : <Navigate to="/" />} />
+      <Route path="/editPhoneNumber" element={ (verified && !guest) ? <EditPhoneNumber phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber} user={user} /> : <Navigate to="/" />} />
     </Routes>
   );
 };
