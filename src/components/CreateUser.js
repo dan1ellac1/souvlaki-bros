@@ -31,6 +31,7 @@
           email,
           number,
           role: "user",
+          phoneVerified: false
         })
           
         setEmail("")

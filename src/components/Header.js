@@ -8,7 +8,7 @@ import app from '../firebaseConfig';
 import { useSnackbar } from 'notistack';
 
 
-export const Header = ({user,guest, setGuest}) => {
+export const Header = ({user, guest, setGuest, phoneVerified}) => {
 
 
   //logout experiment
@@ -24,10 +24,20 @@ export const Header = ({user,guest, setGuest}) => {
           variant:"warning"
         }
       )
-     navigate("/login")
+     return navigate("/login")
+     
     }
-    else navigate('/order')
+    if(!phoneVerified) {
+      enqueueSnackbar("Phone Number not verified",{
+        variant:"warning"
+      })
+      return navigate("/numberConfirmation")
+      
+    }
+    else navigate("/order")
   }
+
+
 
   const handleLogout = async () => {
     const auth = getAuth(app);

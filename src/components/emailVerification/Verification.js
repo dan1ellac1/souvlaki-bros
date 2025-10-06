@@ -48,11 +48,11 @@ export const Verification = ({ setVerified }) => {
     if (!canResend) return;
     try {
       await sendEmailVerification(user);
-      alert("✅ Verification email sent again!");
+      alert("Verification email sent again!");
       setCanResend(false);
       setTimeout(() => setCanResend(true), 60000); // enable again after 1 minute
     } catch (err) {
-      alert("❌ Couldn't resend verification email: " + err.message);
+      alert("Couldn't resend verification email: " + err.message);
     }
   };
   

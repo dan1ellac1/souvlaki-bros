@@ -1,10 +1,10 @@
 import React from 'react'
 import { Header } from '../components/Header'
 
-export const OrderNow = ({setGuest, guest, user}) => {
+export const OrderNow = ({setGuest, guest, user, phoneVerified}) => {
   return (
     <>
-     <Header setGuest={setGuest} guest={guest} user={user}/>
+     <Header setGuest={setGuest} guest={guest} user={user} phoneVerified={phoneVerified}/>
     </>
   )
 }
