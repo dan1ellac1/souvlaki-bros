@@ -48,11 +48,14 @@ export const EditPhoneNumber = ({phoneNumber, setPhoneNumber}) => {
 
     <div className="flex flex-col items-center justify-center h-screen bg-[#f5f5f5]">
       <div className="bg-white p-10 rounded-lg shadow-md text-center w-[400px]">
-        <h2 className="text-md mb-4 text-gray-600">NOTE! Placing your correct phone number will allow you to order from this
+        <h1 className='text-2xl'>Change Phone Number</h1>
+        <h2 className="text-md text-gray-600">NOTE! Placing your correct phone number will allow you to order from this
           website!
         </h2>
+        <h2 className="text-md mb-4 text-gray-600">Dont forget prefixes!
+        </h2>
         <form onSubmit={changeNumber}>
-        <Input type="number" placeholder={phoneNumber} value={phoneNumber} onChange={(e)=>setPhoneNumber(e.target.value)}/>
+        <Input className='mb-5' type="number" placeholder={phoneNumber} value={phoneNumber} onChange={(e)=>setPhoneNumber(e.target.value)}/>
         <button type='submit' className="w-full bg-[#e76a12] text-white font-bold py-2 rounded mb-3">Change phone number</button>
       </form>
 
