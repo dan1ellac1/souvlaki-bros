@@ -6,10 +6,9 @@ import { Home, ProductList, AboutUs, OrderNow } from "../pages";
 import { Login } from "../components/Login";
 import { CreateUser } from "../components/CreateUser";
 import { CreateProduct } from "../handlers/CreateProduct";
-import { Redirect } from "../pages/Redirect";
+import {PhoneVerification }from "../components/phoneVerification/PhoneVerification"
 import { Verification } from "../components/emailVerification/Verification";
 import {NumberConfirmation} from "../components/phoneVerification/NumberConfirmation"
-import {EditPhoneNumber} from "../components/phoneVerification/EditPhoneNumber"
 import { getDatabase,ref, get } from "firebase/database";
 
 
@@ -82,10 +81,9 @@ export const AllRoutes = ({ adminCheck, setAdminCheck }) => {
         : <Navigate to="/numberConfirmation" />
       : <Navigate to="/verify" />} />
       <Route path="/create-user" element={<CreateUser />} />
-      <Route path="/redirect" element={<Redirect setGuest={setGuest} />} />
       <Route path="/verify" element={<Verification setVerified={setVerified} />} />
       <Route path="/numberConfirmation" element={(verified && (!phoneVerified) )? <NumberConfirmation phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber} setPhoneVerified={setPhoneVerified} phoneVerified={phoneVerified} /> : <Navigate to="/" />}/>
-      <Route path="/editPhoneNumber" element={ (verified && !guest) ? <EditPhoneNumber phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber} user={user} /> : <Navigate to="/" />} />
+      <Route path="/phoneVerification" element={phoneVerified ? <Navigate to="/order"/> : <PhoneVerification/>} />
     </Routes>
   );
 };
