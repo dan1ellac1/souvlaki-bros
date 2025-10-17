@@ -50,7 +50,30 @@ export const AllRoutes = ({ adminCheck, setAdminCheck }) => {
     };
     fetchNumber();
   }, []);
+
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const auth = getAuth(app);
+      const user = auth.currentUser;
+      if (!user) return;
   
+      const db = getDatabase(app);
+      const userRef = ref(db, "users/" + user.uid);
+      const snap = await get(userRef);
+  
+      if (snap.exists()) {
+        const data = snap.val();
+        setPhoneNumber(data.number || ""); // keep your existing phone number logic
+        setPhoneVerified(data.phoneVerified || false); // ✅ sync with DB
+      }
+    };
+  
+    fetchUserData();
+  }, []);
+  
+  
+  console.log(phoneVerified)
 
   if (loading) return <p>Loading...</p>;
 
@@ -62,7 +85,7 @@ export const AllRoutes = ({ adminCheck, setAdminCheck }) => {
       />
       <Route
         path="/"
-        element={verified||guest ? <Home user={user} setGuest={setGuest} guest={guest} /> : <Navigate to="/verify" />}
+        element={verified||guest ? <Home user={user} setGuest={setGuest} guest={guest} phoneVerified={phoneVerified}/> : <Navigate to="/verify" />}
       />
       <Route
         path="/create-product"
@@ -70,20 +93,20 @@ export const AllRoutes = ({ adminCheck, setAdminCheck }) => {
       />
       <Route
         path="/about-us"
-        element={<AboutUs user={user} guest={guest} setGuest={setGuest} />}
+        element={<AboutUs user={user} guest={guest} setGuest={setGuest}  phoneVerified={phoneVerified}/>}
       />
       <Route
         path="/products"
-        element={(verified || guest) ? <ProductList user={user} adminCheck={adminCheck} setAdminCheck={setAdminCheck} setGuest={setGuest} guest={guest} /> : <Navigate to="/login" />}
+        element={(verified || guest) ? <ProductList user={user} adminCheck={adminCheck}  phoneVerified={phoneVerified} setAdminCheck={setAdminCheck} setGuest={setGuest} guest={guest} /> : <Navigate to="/login" />}
       />
       <Route path="/order" element={verified ? phoneVerified 
-      ? <OrderNow user={user} guest={guest} setGuest={setGuest} phoneVerified={phoneVerified} />
+      ? <OrderNow user={user} phoneVerified={phoneVerified} />
         : <Navigate to="/numberConfirmation" />
-      : <Navigate to="/verify" />} />
+      : <Navigate to="/login" />} />
       <Route path="/create-user" element={<CreateUser />} />
       <Route path="/verify" element={<Verification setVerified={setVerified} />} />
       <Route path="/numberConfirmation" element={(verified && (!phoneVerified) )? <NumberConfirmation phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber} setPhoneVerified={setPhoneVerified} phoneVerified={phoneVerified} /> : <Navigate to="/" />}/>
-      <Route path="/phoneVerification" element={phoneVerified ? <Navigate to="/order"/> : <PhoneVerification/>} />
+      <Route path="/phoneVerification" element={phoneVerified ? <Navigate to="/order"/> : <PhoneVerification setPhoneVerified={setPhoneVerified}/>} />
     </Routes>
   );
 };

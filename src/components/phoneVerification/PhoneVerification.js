@@ -1,106 +1,115 @@
-import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
-import { getDatabase, ref, update } from "firebase/database";
-import app from "../../firebaseConfig";
-import { enqueueSnackbar } from "notistack";
+  import React, { useState } from "react";
+  import { useLocation, useNavigate } from "react-router-dom";
+  import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, PhoneAuthProvider, linkWithCredential } from "firebase/auth";
+  import { getDatabase, ref, update } from "firebase/database";
+  import app from "../../firebaseConfig";
+  import { useSnackbar } from "notistack";
 
-export const PhoneVerification = () => {
-  const auth = getAuth(app);
-  const db = getDatabase(app);
-  const location = useLocation();
-  const navigate = useNavigate();
+  export const PhoneVerification = ({setPhoneVerified}) => {
+    const location = useLocation();
+    const navigate = useNavigate();
+    const { enqueueSnackbar } = useSnackbar();
 
-  const [phoneNumber, setPhoneNumber] = useState(location.state?.phoneNumber || "");
-  const [otp, setOtp] = useState("");
-  const [confirmationResult, setConfirmationResult] = useState(null);
+    const auth = getAuth(app);
+    const phoneNumber = location.state?.phoneNumber;
+    const formattedNumber = phoneNumber.startsWith("+") ? phoneNumber : `+${phoneNumber}`;
 
-  // ✅ Step 1: Setup Recaptcha
-  const setupRecaptcha = () => {
-    if (!window.recaptchaVerifier) {
-      window.recaptchaVerifier = new RecaptchaVerifier(auth, "recaptcha-container", {
-        size: "invisible", // or 'normal' if you want to show it
-        callback: (response) => {
-          console.log("reCAPTCHA solved");
-        },
-      });
-    }
-  };
+    const [otp, setOtp] = useState("");
+    const [verificationId, setVerificationId] = useState(null);
+    const [loading, setLoading] = useState(false);
 
-  // ✅ Step 2: Send OTP
-  const sendOtp = async () => {
-    try {
-      setupRecaptcha();
+    const sendOtp = async () => {
+      if (!formattedNumber) {
+        enqueueSnackbar("Phone number is missing!", { variant: "warning" });
+        return;
+      }
 
-      const appVerifier = window.recaptchaVerifier;
-      const result = await signInWithPhoneNumber(auth, phoneNumber, appVerifier);
-      setConfirmationResult(result);
+      try {
+        setLoading(true);
 
-      enqueueSnackbar(`Verification code sent to ${phoneNumber}`, { variant: "success" });
-    } catch (err) {
-      enqueueSnackbar("Error sending OTP: " + err.message, { variant: "error" });
-      console.error(err);
-    }
-  };
+        // Initialize reCAPTCHA (only once)
+        if (!window.recaptchaVerifier) {
+          window.recaptchaVerifier = new RecaptchaVerifier(auth, "recaptcha-container", {
+            size: "invisible",
+            callback: () => console.log("Recaptcha verified"),
+          });
+        }
 
-  // ✅ Step 3: Verify OTP
-  const verifyOtp = async (e) => {
-    e.preventDefault();
-    if (!confirmationResult) {
-      enqueueSnackbar("Please request the OTP first.", { variant: "warning" });
-      return;
-    }
+        const confirmation = await signInWithPhoneNumber(auth, formattedNumber, window.recaptchaVerifier);
+        setVerificationId(confirmation.verificationId);
+        enqueueSnackbar("OTP sent successfully!", { variant: "success" });
+      } catch (err) {
+        enqueueSnackbar("Error sending OTP: " + err.message, { variant: "error" });
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    try {
-      const result = await confirmationResult.confirm(otp);
-      const user = result.user;
+    const verifyOtp = async () => {
+      if (!otp || !verificationId) {
+        enqueueSnackbar("Please enter the OTP code.", { variant: "warning" });
+        return;
+      }
 
-      // ✅ Update the database to mark phone as verified
-      await update(ref(db, `users/${user.uid}`), {
-        phoneVerified: true,
-      });
+      try {
+        const credential = PhoneAuthProvider.credential(verificationId, otp);
+        const user = auth.currentUser;
 
-      enqueueSnackbar("Phone number verified successfully!", { variant: "success" });
-      navigate("/order"); // example next step
-    } catch (err) {
-      enqueueSnackbar("Invalid code. Try again.", { variant: "error" });
-      console.error(err);
-    }
-  };
+        if (!user) {
+          enqueueSnackbar("User not logged in.", { variant: "error" });
+          return;
+        }
 
-  useEffect(() => {
-    if (phoneNumber) sendOtp(); // automatically send OTP when page loads
-  }, [phoneNumber]);
+        // ✅ Link phone number to existing user
+        await linkWithCredential(user, credential);
 
-  return (
-    <div className="flex flex-col items-center justify-center h-screen bg-[#f5f5f5]">
-      <div className="bg-white p-10 rounded-lg shadow-md text-center w-[400px]">
-        <h2 className="text-xl font-bold mb-4">Verify Your Phone Number</h2>
-        <p className="mb-4 text-gray-600">Code sent to: <span className="text-[#e76a12]">{phoneNumber}</span></p>
+        // ✅ Update Realtime Database
+        const db = getDatabase(app);
+        await update(ref(db, "users/" + user.uid), { phoneVerified: true });
+        
 
-        <input
-          type="text"
-          value={otp}
-          onChange={(e) => setOtp(e.target.value)}
-          placeholder="Enter 6-digit code"
-          className="border rounded p-2 w-full mb-3 text-center"
-        />
-        <button
-          onClick={verifyOtp}
-          className="w-full bg-[#e76a12] text-white font-bold py-2 rounded mb-3"
-        >
-          Verify
-        </button>
+        enqueueSnackbar("Phone verified successfully!", { variant: "success" });
+        setPhoneVerified(true)
+        navigate("/order"); // redirect to order page
+      } catch (err) {
+        enqueueSnackbar("Error verifying OTP: " + err.message, { variant: "error" });
+      }
+    };
 
-        <button
-          onClick={sendOtp}
-          className="w-full border-2 border-[#e76a12] text-[#e76a12] font-bold py-2 rounded"
-        >
-          Resend Code
-        </button>
+    return (
+      <div className="flex flex-col items-center justify-center h-screen bg-[#f5f5f5]">
+        <div className="bg-white p-10 rounded-lg shadow-md text-center w-[450px]">
+          <h2 className="text-2xl font-bold mb-2">Verify your Phone Number</h2>
+          <p className="text-gray-600 mb-4">We’ve sent an OTP to: <span className="font-bold">{formattedNumber}</span></p>
 
-        <div id="recaptcha-container"></div>
+          <div id="recaptcha-container"></div>
+
+          {!verificationId ? (
+            <button
+              onClick={sendOtp}
+              disabled={loading}
+              className="w-full bg-[#e76a12] text-white font-bold py-2 rounded mb-3"
+            >
+              {loading ? "Sending OTP..." : "Send OTP"}
+            </button>
+          ) : (
+            <>
+              <input
+                type="text"
+                placeholder="Enter OTP"
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
+                className="border border-gray-400 rounded p-2 w-full mb-3 text-center"
+              />
+              <button
+                onClick={verifyOtp}
+                className="w-full bg-[#e76a12] text-white font-bold py-2 rounded"
+              >
+                Verify
+              </button>
+            </>
+          )}
+        </div>
       </div>
-    </div>
-  );
-};
+    );
+  };

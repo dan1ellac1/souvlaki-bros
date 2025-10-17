@@ -88,12 +88,9 @@
         <button className="mt-10 bg-[#e76a12] p-4 font-bold text-white rounded border-[#dcdcdc]"
         onClick={handleCreateUser}>Create Account</button>
 
-        <Link
-                      className=" mt-2 bg-[#e76a12] p-4 font-bold text-white rounded border-[#dcdcdc]"
-                      to="/login"
-                    >
-                      Return to Login
-          </Link>
+        <Link className=" mt-2 bg-[#e76a12] p-4 font-bold text-white rounded border-[#dcdcdc]" to="/login">
+          Return to Login
+        </Link>
         </div>
         </div>
         

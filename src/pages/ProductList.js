@@ -4,7 +4,7 @@ import { FullMenu } from '../Menu/FullMenu'
 import { Write } from '../components/Write'
 import {React, useState} from 'react'
 
-export const ProductList = ({ adminCheck, guest, setGuest, user}) => {
+export const ProductList = ({ phoneVerified, adminCheck, guest, setGuest, user}) => {
   const [refreshTrigger, setRefreshTrigger] = useState(false);
 
   const handleSavedData = () => {
@@ -13,7 +13,7 @@ export const ProductList = ({ adminCheck, guest, setGuest, user}) => {
 
   return (
     <>
-      <Header setGuest={setGuest} guest={guest} user={user}/>
+      <Header  phoneVerified={phoneVerified} setGuest={setGuest} guest={guest} user={user}/>
       <main>
         {adminCheck && <Write savedData={handleSavedData} />}
         <FullMenu savedData={refreshTrigger} guest={guest}/>

@@ -5,7 +5,7 @@ import { DeleteProduct } from "../components/DeleteProduct"; // adjust path if n
 import { EditTwoTone } from "@ant-design/icons";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
-export const FullMenu = ({ savedData }) => {
+export const FullMenu = ({ savedData,  phoneVerified}) => {
   const [user, setUser] = useState(null);
   const [role, setRole] = useState(null);
   const [loadingAuth, setLoadingAuth] = useState(true);
