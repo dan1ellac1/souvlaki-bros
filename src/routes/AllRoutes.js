@@ -53,24 +53,21 @@ export const AllRoutes = ({ adminCheck, setAdminCheck }) => {
 
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      const auth = getAuth(app);
-      const user = auth.currentUser;
-      if (!user) return;
+    if (!user) return; // don't run until user exists
   
+    const fetchUserData = async () => {
       const db = getDatabase(app);
       const userRef = ref(db, "users/" + user.uid);
       const snap = await get(userRef);
-  
       if (snap.exists()) {
         const data = snap.val();
-        setPhoneNumber(data.number || ""); // keep your existing phone number logic
-        setPhoneVerified(data.phoneVerified || false); // ✅ sync with DB
+        setPhoneNumber(data.number || "");
+        setPhoneVerified(data.phoneVerified || false); // ✅ Sync correctly
       }
     };
   
     fetchUserData();
-  }, []);
+  }, [user]);
   
   
   console.log(phoneVerified)
