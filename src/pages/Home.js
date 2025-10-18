@@ -11,7 +11,7 @@ import { getAuth, signOut } from "firebase/auth";
 import app from "../firebaseConfig";
 
 
-export const Home = ({ user, setGuest, guest, phoneVerified }) => {
+export const Home = ({ user, setGuest, guest, phoneVerified, phoneNumber }) => {
   const [username, setUsername] = useState("");
   const navigate = useNavigate();
 
@@ -43,7 +43,7 @@ export const Home = ({ user, setGuest, guest, phoneVerified }) => {
   console.log(username)
   return (
     <>
-      <Header phoneVerified={phoneVerified} handleLogout={handleLogout} setGuest={setGuest} guest={guest} user={user}/>
+      <Header phoneVerified={phoneVerified} handleLogout={handleLogout} phoneNumber={phoneNumber} setGuest={setGuest} guest={guest} user={user}/>
       <main className="ml-7 mr-7">
         {/* Welcome and Logout */}
         <div className="flex justify-between items-center m-9">

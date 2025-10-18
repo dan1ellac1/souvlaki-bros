@@ -82,7 +82,7 @@ export const AllRoutes = ({ adminCheck, setAdminCheck }) => {
       />
       <Route
         path="/"
-        element={verified||guest ? <Home user={user} setGuest={setGuest} guest={guest} phoneVerified={phoneVerified}/> : <Navigate to="/verify" />}
+        element={verified||guest ? <Home user={user} setGuest={setGuest} guest={guest} phoneVerified={phoneVerified} phoneNumber={phoneNumber}/> : <Navigate to="/verify" />}
       />
       <Route
         path="/create-product"
@@ -90,11 +90,11 @@ export const AllRoutes = ({ adminCheck, setAdminCheck }) => {
       />
       <Route
         path="/about-us"
-        element={<AboutUs user={user} guest={guest} setGuest={setGuest}  phoneVerified={phoneVerified}/>}
+        element={<AboutUs user={user} guest={guest} setGuest={setGuest} phoneNumber={phoneNumber}  phoneVerified={phoneVerified}/>}
       />
       <Route
         path="/products"
-        element={(verified || guest) ? <ProductList user={user} adminCheck={adminCheck}  phoneVerified={phoneVerified} setAdminCheck={setAdminCheck} setGuest={setGuest} guest={guest} /> : <Navigate to="/login" />}
+        element={(verified || guest) ? <ProductList user={user} adminCheck={adminCheck} phoneNumber={phoneNumber} phoneVerified={phoneVerified} setAdminCheck={setAdminCheck} setGuest={setGuest} guest={guest} /> : <Navigate to="/login" />}
       />
       <Route path="/order" element={verified ? phoneVerified 
       ? <OrderNow user={user} phoneVerified={phoneVerified} />

@@ -5,10 +5,10 @@ import { Link } from 'react-router-dom'
 import One from "../components/IMAGES/pjat e lezetshme.jpg"
 import Two from "../components/IMAGES/aboutus 1.webp"
 import Placeholder from "../components/IMAGES/new ring placeholder.jpeg"
-export const AboutUs = ({guest, setGuest, user,  phoneVerified}) => {
+export const AboutUs = ({guest, setGuest, user,  phoneVerified, phoneNumber}) => {
   return (
     <>
-    <Header  phoneVerified={phoneVerified} setGuest={setGuest} guest={guest} user={user}/>
+    <Header  phoneVerified={phoneVerified} setGuest={setGuest} guest={guest} user={user} phoneNumber={phoneNumber}/>
     <main className='ml-7 mr-7'>
       <section className='flex flex-row m-9 font-bold bg-[#e8a033] border rounded-xl'>
         <div className='m-5 flex flex-row justify-evenly'>
