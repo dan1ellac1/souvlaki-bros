@@ -3,6 +3,7 @@ import { Footer } from '../components/Footer'
 import { FullMenu } from '../Menu/FullMenu'
 import { Write } from '../components/Write'
 import {React, useState} from 'react'
+import '../App.css';
 
 export const ProductList = ({ phoneVerified, adminCheck, guest, setGuest, user, phoneNumber}) => {
   const [refreshTrigger, setRefreshTrigger] = useState(false);

@@ -19,6 +19,12 @@ input[type=number] {
   font-style: normal;
 }
 
+.selected{
+  border: 3px;
+  border-radius: 2px;
+  border-color: green;
+}
+
 
 body {
   font-family: "helvetica", serif;

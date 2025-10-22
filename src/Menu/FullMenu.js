@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import app from "../firebaseConfig";
 import { getDatabase, ref, get, update } from "firebase/database";
-import { DeleteProduct } from "../components/DeleteProduct"; // adjust path if needed
+import { DeleteProduct } from "../components/DeleteProduct";
 import { EditTwoTone } from "@ant-design/icons";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
-export const FullMenu = ({ savedData,  phoneVerified}) => {
+export const FullMenu = ({ savedData, phoneVerified }) => {
   const [user, setUser] = useState(null);
   const [role, setRole] = useState(null);
   const [loadingAuth, setLoadingAuth] = useState(true);
@@ -16,7 +16,26 @@ export const FullMenu = ({ savedData,  phoneVerified}) => {
   const [editedDescription, setEditedDescription] = useState("");
   const [editedPrice, setEditedPrice] = useState("");
 
-  // Auth + role check
+  // --- Order-related state ---
+  const [isOrdering, setIsOrdering] = useState("");
+  const [order, setOrder] = useState([]);
+  const [selectedProduct, setSelectedProduct] = useState({});
+
+  // --- Handle selection (now stores product data) ---
+  const handleProductSelection = (productId, product) => {
+    setSelectedProduct((prev) => {
+      const isAlreadySelected = !!prev[productId];
+      if (isAlreadySelected) {
+        const updated = { ...prev };
+        delete updated[productId];
+        return updated;
+      } else {
+        return { ...prev, [productId]: product };
+      }
+    });
+  };
+
+  // --- Auth + Role check ---
   useEffect(() => {
     const auth = getAuth(app);
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
@@ -29,7 +48,7 @@ export const FullMenu = ({ savedData,  phoneVerified}) => {
         if (snap.exists()) {
           setRole(snap.val().role);
         } else {
-          setRole("user"); // default role
+          setRole("user");
         }
       } else {
         setRole(null);
@@ -41,7 +60,7 @@ export const FullMenu = ({ savedData,  phoneVerified}) => {
     return () => unsubscribe();
   }, []);
 
-  // Fetch products
+  // --- Fetch products ---
   const fetchData = async () => {
     const db = getDatabase(app);
     const dbRef = ref(db, "products");
@@ -59,7 +78,7 @@ export const FullMenu = ({ savedData,  phoneVerified}) => {
     fetchData();
   }, [savedData]);
 
-  // Edit product
+  // --- Edit product logic ---
   const handleEditClick = (category, productId, product) => {
     setEditingProduct({ category, productId });
     setEditedName(product.productName);
@@ -86,9 +105,88 @@ export const FullMenu = ({ savedData,  phoneVerified}) => {
     fetchData();
   };
 
-  // Render category
+  // --- ProductItem subcomponent ---
+  const ProductItem = ({ category, productId, item, selected, onSelect }) => {
+    const isEditing =
+      editingProduct &&
+      editingProduct.category === category &&
+      editingProduct.productId === productId;
+
+    return (
+      <li
+        onClick={() => !isEditing && onSelect(productId, item)}
+        className={`p-3 ${selected ? "bg-green-500 " : ""} mb-3 cursor-pointer p-2 rounded`}
+      >
+        {isEditing ? (
+          <>
+            <input
+              type="text"
+              value={editedName}
+              onChange={(e) => setEditedName(e.target.value)}
+              className="border p-1"
+            />
+            <textarea
+              value={editedDescription}
+              onChange={(e) => setEditedDescription(e.target.value)}
+              className="border p-1 ml-2"
+            />
+            <input
+              type="number"
+              step="0.01"
+              value={editedPrice}
+              onChange={(e) => setEditedPrice(e.target.value)}
+              className="border p-1 ml-2 w-24"
+            />
+            <button
+              onClick={handleSaveEdit}
+              className="ml-2 bg-green-600 text-white px-3 py-1 rounded"
+            >
+              Save
+            </button>
+            <button
+              onClick={() => setEditingProduct(null)}
+              className="ml-2 bg-gray-600 text-white px-3 py-1 rounded"
+            >
+              Cancel
+            </button>
+          </>
+        ) : (
+          <>
+            <div>
+              <p className="text-xl font-bold">{item.productName}</p>
+              <p>{item.productDescription}</p>
+              <p className="text-green-700 font-semibold">
+                {item.productPrice?.toFixed(2) ?? "N/A"} leke
+              </p>
+            </div>
+
+            {role === "admin" && (
+              <div className="mt-1">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleEditClick(category, productId, item);
+                  }}
+                  className="border border-blue-500 border-[2px] text-white px-3 py-1 rounded"
+                >
+                  <EditTwoTone />
+                </button>
+                <DeleteProduct
+                  category={category}
+                  productId={productId}
+                  onDeleted={fetchData}
+                />
+              </div>
+            )}
+          </>
+        )}
+      </li>
+    );
+  };
+
+  // --- Render category ---
   const renderCategory = ([category, items]) => {
-    if (!category) return <div className="p-6"></div>; // empty slot
+    if (!category) return <div className="p-6"></div>;
 
     return (
       <div
@@ -98,76 +196,21 @@ export const FullMenu = ({ savedData,  phoneVerified}) => {
         <h1 className="text-3xl font-bold mb-2">{category}</h1>
         <ul>
           {Object.entries(items).map(([productId, item]) => (
-            <li key={productId} className="mb-3">
-              {editingProduct &&
-              editingProduct.category === category &&
-              editingProduct.productId === productId ? (
-                <>
-                  <input
-                    type="text"
-                    value={editedName}
-                    onChange={(e) => setEditedName(e.target.value)}
-                    className="border p-1"
-                  />
-                  <textarea
-                    value={editedDescription}
-                    onChange={(e) => setEditedDescription(e.target.value)}
-                    className="border p-1 ml-2"
-                  />
-                  <input
-                    type="number"
-                    step="0.01"
-                    value={editedPrice}
-                    onChange={(e) => setEditedPrice(e.target.value)}
-                    className="border p-1 ml-2 w-24"
-                  />
-                  <button
-                    onClick={handleSaveEdit}
-                    className="ml-2 bg-green-600 text-white px-3 py-1 rounded"
-                  >
-                    Save
-                  </button>
-                  <button
-                    onClick={() => setEditingProduct(null)}
-                    className="ml-2 bg-gray-600 text-white px-3 py-1 rounded"
-                  >
-                    Cancel
-                  </button>
-                </>
-              ) : (
-                <>
-                  <p className="text-xl font-bold">{item.productName}</p>
-                  <p>{item.productDescription}</p>
-                  <p className="text-green-700 font-semibold">
-                    {item.productPrice?.toFixed(2) ?? "N/A"} leke
-                  </p>
-
-                  {/* Only admins see edit/delete buttons */}
-                  {role === "admin" && (
-                    <div className="mt-1">
-                      <button
-                        onClick={() => handleEditClick(category, productId, item)}
-                        className="border border-blue-500 border-[2px] text-white px-3 py-1 rounded"
-                      >
-                        <EditTwoTone />
-                      </button>
-                      <DeleteProduct
-                        category={category}
-                        productId={productId}
-                        onDeleted={fetchData}
-                      />
-                    </div>
-                  )}
-                </>
-              )}
-            </li>
+            <ProductItem
+              key={productId}
+              category={category}
+              productId={productId}
+              item={item}
+              selected={!!selectedProduct[productId]}
+              onSelect={handleProductSelection}
+            />
           ))}
         </ul>
       </div>
     );
   };
 
-  // Prepare two-row layout
+  // --- Layout setup ---
   const categoryEntries = Object.entries(productsByCategory);
   const totalSlots = Math.ceil(categoryEntries.length / 2) * 2;
   const paddedCategories = [...categoryEntries];
@@ -175,11 +218,11 @@ export const FullMenu = ({ savedData,  phoneVerified}) => {
   const row1 = paddedCategories.slice(0, totalSlots / 2);
   const row2 = paddedCategories.slice(totalSlots / 2);
 
-  // Loading state
+  // --- Loading state ---
   if (loadingAuth) return <p>Loading...</p>;
 
   return (
-    <div className="m-9 p-7 bg-white rounded-md shadow-xl border-[#dcdcdc] ">
+    <div className="m-9 p-7 bg-white rounded-md shadow-xl border-[#dcdcdc]">
       {[row1, row2].map((row, i) => (
         <div key={i} className="grid grid-cols-4 gap-6 mb-6">
           {row.map(renderCategory)}
