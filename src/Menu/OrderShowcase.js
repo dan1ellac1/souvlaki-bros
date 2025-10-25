@@ -1,19 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
 
 export const OrderShowcase = ({ selectedProduct }) => {
-  const initialProducts = Object.entries(selectedProduct);
-
-  const [orderProducts, setOrderProducts] = useState(initialProducts);
+  const [orderProducts, setOrderProducts] = useState([]);
   const [counts, setCounts] = useState({});
 
-  const handleAddDuplicate = (id, product) => {
+  // Add new products to order list when prop changes
+  useEffect(() => {
+    const entries = Object.entries(selectedProduct);
+    if (entries.length > 0) {
+      setOrderProducts(prev => {
+        const existingIds = prev.map(([id]) => id);
+        const newEntries = entries.filter(([id]) => !existingIds.includes(id));
+        return [...prev, ...newEntries];
+      });
+    }
+  }, [selectedProduct]);
+
+  const handleAddDuplicate = (id) => {
     setCounts(prev => ({
       ...prev,
       [id]: (prev[id] || 1) + 1
     }));
-
-    setOrderProducts(prev => [...prev, [id, product]]);
   };
 
   const handleRemoveDuplicate = (id) => {
@@ -24,17 +32,9 @@ export const OrderShowcase = ({ selectedProduct }) => {
         [id]: current > 1 ? current - 1 : 1
       };
     });
-
-    setOrderProducts(prev => {
-      const index = prev.findIndex(([prodId]) => prodId === id);
-      if (index !== -1) {
-        const newArray = [...prev];
-        newArray.splice(index, 1);
-        return newArray;
-      }
-      return prev;
-    });
   };
+
+  console.log(orderProducts.length)
 
   return (
     <div
@@ -47,7 +47,7 @@ export const OrderShowcase = ({ selectedProduct }) => {
       <ul>
         {orderProducts.length === 0 && <p>No products selected.</p>}
 
-        {initialProducts.map(([id, product]) => {
+        {orderProducts.map(([id, product]) => {
           const count = counts[id] || 1;
           const totalPrice = (product.productPrice ?? 0) * count;
 
@@ -81,7 +81,7 @@ export const OrderShowcase = ({ selectedProduct }) => {
 
                 <div
                   className="cursor-pointer m-1 p-1 border border-black rounded"
-                  onClick={() => handleAddDuplicate(id, product)}
+                  onClick={() => handleAddDuplicate(id)}
                 >
                   <PlusOutlined />
                 </div>
