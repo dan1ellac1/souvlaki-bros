@@ -4,6 +4,7 @@ import { getDatabase, ref, get, update } from "firebase/database";
 import { DeleteProduct } from "../components/DeleteProduct";
 import { EditTwoTone } from "@ant-design/icons";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { OrderShowcase } from "./OrderShowcase";
 
 export const FullMenu = ({ savedData, phoneVerified }) => {
   const [user, setUser] = useState(null);
@@ -17,11 +18,10 @@ export const FullMenu = ({ savedData, phoneVerified }) => {
   const [editedPrice, setEditedPrice] = useState("");
 
   // --- Order-related state ---
-  const [isOrdering, setIsOrdering] = useState("");
   const [order, setOrder] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState({});
 
-  // --- Handle selection (now stores product data) ---
+  // --- Handle product selection ---
   const handleProductSelection = (productId, product) => {
     setSelectedProduct((prev) => {
       const isAlreadySelected = !!prev[productId];
@@ -115,7 +115,9 @@ export const FullMenu = ({ savedData, phoneVerified }) => {
     return (
       <li
         onClick={() => !isEditing && onSelect(productId, item)}
-        className={`p-3 ${selected ? "bg-green-500 " : ""} mb-3 cursor-pointer p-2 rounded`}
+        className={`p-3 mb-3 cursor-pointer rounded ${
+          selected ? "bg-green-200" : "hover:bg-gray-100"
+        }`}
       >
         {isEditing ? (
           <>
@@ -161,13 +163,13 @@ export const FullMenu = ({ savedData, phoneVerified }) => {
             </div>
 
             {role === "admin" && (
-              <div className="mt-1">
+              <div className="mt-1 flex gap-2">
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
                     handleEditClick(category, productId, item);
                   }}
-                  className="border border-blue-500 border-[2px] text-white px-3 py-1 rounded"
+                  className="border border-blue-500 text-blue-500 px-3 py-1 rounded"
                 >
                   <EditTwoTone />
                 </button>
@@ -191,7 +193,7 @@ export const FullMenu = ({ savedData, phoneVerified }) => {
     return (
       <div
         key={category}
-        className="p-6 border rounded border-color-[#dcdcdc] border-[5px]"
+        className="p-6 border rounded border-[#dcdcdc] border-[3px]"
       >
         <h1 className="text-3xl font-bold mb-2">{category}</h1>
         <ul>
@@ -214,7 +216,8 @@ export const FullMenu = ({ savedData, phoneVerified }) => {
   const categoryEntries = Object.entries(productsByCategory);
   const totalSlots = Math.ceil(categoryEntries.length / 2) * 2;
   const paddedCategories = [...categoryEntries];
-  while (paddedCategories.length < totalSlots) paddedCategories.push([null, null]);
+  while (paddedCategories.length < totalSlots)
+    paddedCategories.push([null, null]);
   const row1 = paddedCategories.slice(0, totalSlots / 2);
   const row2 = paddedCategories.slice(totalSlots / 2);
 
@@ -223,11 +226,19 @@ export const FullMenu = ({ savedData, phoneVerified }) => {
 
   return (
     <div className="m-9 p-7 bg-white rounded-md shadow-xl border-[#dcdcdc]">
+      {/* Product grid */}
       {[row1, row2].map((row, i) => (
         <div key={i} className="grid grid-cols-4 gap-6 mb-6">
           {row.map(renderCategory)}
         </div>
       ))}
+
+      {/* ✅ Order showcase appears only once, below menu */}
+      {Object.keys(selectedProduct).length > 0 && (
+        <div className="mt-8">
+          <OrderShowcase selectedProduct={selectedProduct} />
+        </div>
+      )}
     </div>
   );
 };
