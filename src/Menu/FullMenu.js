@@ -5,6 +5,7 @@ import { DeleteProduct } from "../components/DeleteProduct";
 import { EditTwoTone } from "@ant-design/icons";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { OrderShowcase } from "./OrderShowcase";
+import { useLocation } from "react-router-dom";
 
 export const FullMenu = ({ savedData }) => {
   const [user, setUser] = useState(null);
@@ -18,20 +19,45 @@ export const FullMenu = ({ savedData }) => {
   const [editedPrice, setEditedPrice] = useState("");
 
   // --- Order-related state ---
-  const [order, setOrder] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState({});
+  const [counts, setCounts] = useState({});
+  const location = useLocation();
+
+  // ✅ Load order state (on mount or when coming from Order page)
+  useEffect(() => {
+    const saved = JSON.parse(localStorage.getItem("userOrder"));
+    if (saved) {
+      setSelectedProduct(saved.selectedProduct || {});
+      setCounts(saved.counts || {});
+    }
+
+    if (location.state?.selectedProduct) {
+      setSelectedProduct(location.state.selectedProduct);
+    }
+    if (location.state?.counts) {
+      setCounts(location.state.counts);
+    }
+  }, [location.state]);
+
+  // 💾 Save order state automatically
+  useEffect(() => {
+    localStorage.setItem(
+      "userOrder",
+      JSON.stringify({ selectedProduct, counts })
+    );
+  }, [selectedProduct, counts]);
 
   // --- Handle product selection ---
   const handleProductSelection = (productId, product) => {
     setSelectedProduct((prev) => {
       const isAlreadySelected = !!prev[productId];
+      const updated = { ...prev };
       if (isAlreadySelected) {
-        const updated = { ...prev };
         delete updated[productId];
-        return updated;
       } else {
-        return { ...prev, [productId]: product };
+        updated[productId] = product;
       }
+      return updated;
     });
   };
 
@@ -40,23 +66,14 @@ export const FullMenu = ({ savedData }) => {
     const auth = getAuth(app);
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
-
       if (currentUser) {
         const db = getDatabase(app);
         const roleRef = ref(db, "users/" + currentUser.uid);
         const snap = await get(roleRef);
-        if (snap.exists()) {
-          setRole(snap.val().role);
-        } else {
-          setRole("user");
-        }
-      } else {
-        setRole(null);
-      }
-
+        setRole(snap.exists() ? snap.val().role : "user");
+      } else setRole(null);
       setLoadingAuth(false);
     });
-
     return () => unsubscribe();
   }, []);
 
@@ -65,7 +82,6 @@ export const FullMenu = ({ savedData }) => {
     const db = getDatabase(app);
     const dbRef = ref(db, "products");
     const snapshot = await get(dbRef);
-
     if (snapshot.exists()) {
       setProductsByCategory(snapshot.val());
     } else {
@@ -78,7 +94,7 @@ export const FullMenu = ({ savedData }) => {
     fetchData();
   }, [savedData]);
 
-  // --- Edit product logic ---
+  // --- Edit product logic (unchanged) ---
   const handleEditClick = (category, productId, product) => {
     setEditingProduct({ category, productId });
     setEditedName(product.productName);
@@ -88,24 +104,20 @@ export const FullMenu = ({ savedData }) => {
 
   const handleSaveEdit = async () => {
     if (!editingProduct) return;
-
     const db = getDatabase(app);
     const productRef = ref(
       db,
       `products/${editingProduct.category}/${editingProduct.productId}`
     );
-
     await update(productRef, {
       productName: editedName,
       productDescription: editedDescription,
       productPrice: parseFloat(editedPrice) || 0,
     });
-
     setEditingProduct(null);
     fetchData();
   };
 
-  // --- ProductItem subcomponent ---
   const ProductItem = ({ category, productId, item, selected, onSelect }) => {
     const isEditing =
       editingProduct &&
@@ -114,13 +126,11 @@ export const FullMenu = ({ savedData }) => {
 
     return (
       <li
-  onClick={() => !isEditing && onSelect && onSelect(productId, item)}
-  className={`p-3 mb-3 rounded ${
-    onSelect
-      ? "cursor-pointer hover:bg-gray-100"
-      : ""
-  } ${selected ? "bg-green-200" : ""}`}
->
+        onClick={() => !isEditing && onSelect && onSelect(productId, item)}
+        className={`p-3 mb-3 rounded ${
+          onSelect ? "cursor-pointer hover:bg-gray-100" : ""
+        } ${selected ? "bg-green-200" : ""}`}
+      >
         {isEditing ? (
           <>
             <input
@@ -188,10 +198,8 @@ export const FullMenu = ({ savedData }) => {
     );
   };
 
-  // --- Render category ---
   const renderCategory = ([category, items]) => {
     if (!category) return <div className="p-6"></div>;
-
     return (
       <div
         key={category}
@@ -201,23 +209,23 @@ export const FullMenu = ({ savedData }) => {
         <ul>
           {Object.entries(items).map(([productId, item]) => (
             <ProductItem
-            key={productId}
-            category={category}
-            productId={productId}
-            item={item}
-            {...(user ? {
-              selected: !!selectedProduct[productId],
-              onSelect: handleProductSelection
-            } : {})}
-          />
-          
+              key={productId}
+              category={category}
+              productId={productId}
+              item={item}
+              {...(user
+                ? {
+                    selected: !!selectedProduct[productId],
+                    onSelect: handleProductSelection,
+                  }
+                : {})}
+            />
           ))}
         </ul>
       </div>
     );
   };
 
-  // --- Layout setup ---
   const categoryEntries = Object.entries(productsByCategory);
   const totalSlots = Math.ceil(categoryEntries.length / 2) * 2;
   const paddedCategories = [...categoryEntries];
@@ -226,24 +234,25 @@ export const FullMenu = ({ savedData }) => {
   const row1 = paddedCategories.slice(0, totalSlots / 2);
   const row2 = paddedCategories.slice(totalSlots / 2);
 
-  // --- Loading state ---
   if (loadingAuth) return <p>Loading...</p>;
 
   return (
     <div className="m-9 p-7 bg-white rounded-md shadow-xl border-[#dcdcdc]">
-      {/* Product grid */}
       {[row1, row2].map((row, i) => (
         <div key={i} className="grid grid-cols-4 gap-6 mb-6">
           {row.map(renderCategory)}
         </div>
       ))}
 
-      {/* ✅ Order showcase appears only once, below menu */}
-      {user ? (Object.keys(selectedProduct).length > 0 && (
+      {user && Object.keys(selectedProduct).length > 0 && (
         <div className="mt-8">
-         <OrderShowcase selectedProduct={selectedProduct} />
+          <OrderShowcase
+            selectedProduct={selectedProduct}
+            counts={counts}
+            setCounts={setCounts}
+          />
         </div>
-      )) : ""}
+      )}
     </div>
   );
 };

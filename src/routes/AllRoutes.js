@@ -10,6 +10,7 @@ import {PhoneVerification }from "../components/phoneVerification/PhoneVerificati
 import { Verification } from "../components/emailVerification/Verification";
 import {NumberConfirmation} from "../components/phoneVerification/NumberConfirmation"
 import { getDatabase,ref, get } from "firebase/database";
+import { OrderSent } from "../pages/OrderSent";
 
 
 
@@ -104,6 +105,16 @@ export const AllRoutes = ({ adminCheck, setAdminCheck }) => {
       <Route path="/verify" element={<Verification setVerified={setVerified} />} />
       <Route path="/numberConfirmation" element={(verified && (!phoneVerified) )? <NumberConfirmation phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber} setPhoneVerified={setPhoneVerified} phoneVerified={phoneVerified} /> : <Navigate to="/" />}/>
       <Route path="/phoneVerification" element={phoneVerified ? <Navigate to="/order"/> : <PhoneVerification setPhoneVerified={setPhoneVerified}/>} />
+
+      <Route
+  path="/order-sent"
+  element={verified
+    ? phoneVerified
+      ? <OrderSent user={user} phoneVerified={phoneVerified} />
+      : <Navigate to="/numberConfirmation" />
+    : <Navigate to="/login" />
+  }
+/>
     </Routes>
   );
 };
