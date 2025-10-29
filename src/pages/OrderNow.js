@@ -7,14 +7,22 @@ export const OrderNow = ({ setGuest, guest, user, phoneVerified }) => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { orderProducts = [], counts = {}, totalPrice = 0, selectedProduct = {}, orderComment: initialComment = "" } = location.state || {};
+  const { 
+    orderProducts = [], 
+    counts = {}, 
+    totalPrice = 0, 
+    selectedProduct = {}, 
+    orderComment: initialComment = "", 
+    deliveryAddress: initialAddress = "", 
+    deliveryFee: initialDeliveryFee = 0 
+  } = location.state || {};
 
   const [orderComment, setOrderComment] = useState(initialComment);
-  const [address, setAddress] = useState("");
-  const [deliveryFee, setDeliveryFee] = useState(0);
+  const [address, setAddress] = useState(initialAddress);
+  const [deliveryFee, setDeliveryFee] = useState(initialDeliveryFee);
 
   const deliveryFees = {
-    "Astir": 50,
+    "Astir": 100,
     "Yzberisht": 100,
     "Laprak": 100,
     "Terminali": 100,
@@ -50,12 +58,29 @@ export const OrderNow = ({ setGuest, guest, user, phoneVerified }) => {
     );
   }
 
+  const sendOrder = () => {
+    if (!address) {
+      alert("Please select a delivery address before sending the order.");
+      return;
+    }
+
+    navigate("/order-sent", {
+      state: {
+        selectedProduct,
+        counts,
+        totalPrice,
+        deliveryAddress: address,
+        deliveryFee,
+        orderComment
+      },
+    });
+  };
+
   return (
     <>
       <Header setGuest={setGuest} guest={guest} user={user} phoneVerified={phoneVerified}/>
       <div className="p-10 max-w-4xl mx-auto bg-white shadow-lg rounded-lg">
         <h1 className="text-3xl font-bold mb-6">Your Order</h1>
-        <h1>Note! You must have Whatsapp installed in order to </h1>
 
         <ul>
           {orderProducts.map(([id, product]) => {
@@ -95,7 +120,7 @@ export const OrderNow = ({ setGuest, guest, user, phoneVerified }) => {
         <div className="mt-4">
           <label className="block mb-1 font-semibold">Delivery Location:</label>
           <select
-          required
+            required
             value={address}
             onChange={(e) => {
               const selected = e.target.value;
@@ -120,15 +145,23 @@ export const OrderNow = ({ setGuest, guest, user, phoneVerified }) => {
           </div>
         </div>
 
-        {/* Return to Menu */}
-        <button
-          onClick={() => navigate("/products", {
-            state: { selectedProduct, counts, totalPrice, orderComment, address, deliveryFee }
-          })}
-          className="bg-orange-600 hover:bg-gray-700 text-white px-5 py-2 rounded-md mt-4"
-        >
-          Return to Menu
-        </button>
+        {/* Action buttons */}
+        <div className="flex flex-col md:flex-row gap-4 mt-4">
+          <button
+            onClick={sendOrder}
+            className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-md font-semibold"
+          >
+            Send Order
+          </button>
+          <button
+            onClick={() => navigate("/products", {
+              state: { selectedProduct, counts, totalPrice, orderComment, address, deliveryFee }
+            })}
+            className="bg-orange-600 hover:bg-gray-700 text-white px-6 py-2 rounded-md font-semibold"
+          >
+            Return to Menu
+          </button>
+        </div>
       </div>
     </>
   );
