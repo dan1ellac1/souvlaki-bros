@@ -1,95 +1,65 @@
-import React, { useState, useEffect } from 'react';
-import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 export const OrderShowcase = ({ selectedProduct }) => {
-  const [orderProducts, setOrderProducts] = useState([]);
   const [counts, setCounts] = useState({});
+  const [orderProducts, setOrderProducts] = useState([]);
+  const navigate = useNavigate();
 
-  // Add new products to order list when prop changes
+  // Keep order products synced with parent
   useEffect(() => {
     const entries = Object.entries(selectedProduct);
     if (entries.length > 0) {
-      setOrderProducts(prev => {
-        const existingIds = prev.map(([id]) => id);
-        const newEntries = entries.filter(([id]) => !existingIds.includes(id));
-        return [...prev, ...newEntries];
-      });
+      setOrderProducts(entries);
+    } else {
+      setOrderProducts([]);
     }
   }, [selectedProduct]);
 
-  const handleAddDuplicate = (id) => {
-    setCounts(prev => ({
-      ...prev,
-      [id]: (prev[id] || 1) + 1
-    }));
-  };
+  // Calculate totals
+  const totalItems = orderProducts.reduce((acc, [id]) => {
+    return acc + (counts[id] || 1);
+  }, 0);
 
-  const handleRemoveDuplicate = (id) => {
-    setCounts(prev => {
-      const current = prev[id] || 1;
-      return {
-        ...prev,
-        [id]: current > 1 ? current - 1 : 1
-      };
+  const totalPrice = orderProducts.reduce((acc, [id, product]) => {
+    const count = counts[id] || 1;
+    return acc + (product.productPrice ?? 0) * count;
+  }, 0);
+
+  // Navigate to /order
+  const goToOrder = () => {
+    navigate("/order", {
+      state: {
+        orderProducts,
+        counts,
+        totalPrice,
+      },
     });
   };
 
-  console.log(orderProducts.length)
+  if (orderProducts.length === 0) return null;
 
   return (
     <div
       className="w-3/5 fixed bottom-0 left-0 right-0 mx-auto
       bg-white shadow-lg rounded-t-lg p-4 border-t border-gray-200 z-50
-      flex flex-col transition-all"
+      flex justify-between items-center transition-all"
     >
-      <p className="text-2xl font-bold mb-2 text-left">Your order:</p>
+      <div>
+        <p className="text-xl font-semibold">
+          🛒 {totalItems} item{totalItems !== 1 ? "s" : ""}
+        </p>
+        <p className="text-green-700 font-bold">
+          Total: {totalPrice.toFixed(2)} leke
+        </p>
+      </div>
 
-      <ul>
-        {orderProducts.length === 0 && <p>No products selected.</p>}
-
-        {orderProducts.map(([id, product]) => {
-          const count = counts[id] || 1;
-          const totalPrice = (product.productPrice ?? 0) * count;
-
-          return (
-            <li
-              key={id}
-              className="mb-2 p-2 border border-black rounded flex justify-between"
-            >
-              <div>
-                <p className="font-semibold">{product.productName}</p>
-                <p className="text-gray-600">{product.productDescription}</p>
-                <p className="text-green-700 font-bold">
-                  {totalPrice.toFixed(2)} leke
-                </p>
-                {count > 1 && (
-                  <p className="text-sm text-gray-500">
-                    ({count} × {product.productPrice?.toFixed(2)} leke)
-                  </p>
-                )}
-              </div>
-
-              <div className="flex flex-row items-center">
-                <div
-                  className="cursor-pointer m-1 p-1 border border-black rounded"
-                  onClick={() => handleRemoveDuplicate(id)}
-                >
-                  <MinusOutlined />
-                </div>
-
-                <p className="m-1">{count}</p>
-
-                <div
-                  className="cursor-pointer m-1 p-1 border border-black rounded"
-                  onClick={() => handleAddDuplicate(id)}
-                >
-                  <PlusOutlined />
-                </div>
-              </div>
-            </li>
-          );
-        })}
-      </ul>
+      <button
+        onClick={goToOrder}
+        className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-semibold"
+      >
+        Go to Order
+      </button>
     </div>
   );
 };

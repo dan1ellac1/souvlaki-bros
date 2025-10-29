@@ -6,7 +6,7 @@ import { EditTwoTone } from "@ant-design/icons";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { OrderShowcase } from "./OrderShowcase";
 
-export const FullMenu = ({ savedData, phoneVerified }) => {
+export const FullMenu = ({ savedData }) => {
   const [user, setUser] = useState(null);
   const [role, setRole] = useState(null);
   const [loadingAuth, setLoadingAuth] = useState(true);
@@ -114,11 +114,13 @@ export const FullMenu = ({ savedData, phoneVerified }) => {
 
     return (
       <li
-        onClick={() => !isEditing && onSelect(productId, item)}
-        className={`p-3 mb-3 cursor-pointer rounded ${
-          selected ? "bg-green-200" : "hover:bg-gray-100"
-        }`}
-      >
+  onClick={() => !isEditing && onSelect && onSelect(productId, item)}
+  className={`p-3 mb-3 rounded ${
+    onSelect
+      ? "cursor-pointer hover:bg-gray-100"
+      : ""
+  } ${selected ? "bg-green-200" : ""}`}
+>
         {isEditing ? (
           <>
             <input
@@ -199,13 +201,16 @@ export const FullMenu = ({ savedData, phoneVerified }) => {
         <ul>
           {Object.entries(items).map(([productId, item]) => (
             <ProductItem
-              key={productId}
-              category={category}
-              productId={productId}
-              item={item}
-              selected={!!selectedProduct[productId]}
-              onSelect={handleProductSelection}
-            />
+            key={productId}
+            category={category}
+            productId={productId}
+            item={item}
+            {...(user ? {
+              selected: !!selectedProduct[productId],
+              onSelect: handleProductSelection
+            } : {})}
+          />
+          
           ))}
         </ul>
       </div>
@@ -234,11 +239,11 @@ export const FullMenu = ({ savedData, phoneVerified }) => {
       ))}
 
       {/* ✅ Order showcase appears only once, below menu */}
-      {Object.keys(selectedProduct).length > 0 && (
+      {user ? (Object.keys(selectedProduct).length > 0 && (
         <div className="mt-8">
-          <OrderShowcase selectedProduct={selectedProduct} />
+         <OrderShowcase selectedProduct={selectedProduct} />
         </div>
-      )}
+      )) : ""}
     </div>
   );
 };

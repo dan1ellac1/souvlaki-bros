@@ -17,7 +17,7 @@ export const ProductList = ({ phoneVerified, adminCheck, guest, setGuest, user, 
       <Header phoneNumber={phoneNumber}  phoneVerified={phoneVerified} setGuest={setGuest} guest={guest} user={user}/>
       <main>
         {adminCheck && <Write savedData={handleSavedData} />}
-        <FullMenu savedData={refreshTrigger} guest={guest}/>
+        <FullMenu savedData={refreshTrigger} user={user} guest={guest}/>
       </main>
       <Footer />
     </>
