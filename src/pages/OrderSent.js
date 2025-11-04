@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { Header } from "../components/Header";
 
-export const OrderSent = ({ setGuest, guest, user, phoneVerified, businessNumber = "+355692314919" }) => {
+export const OrderSent = ({ setGuest, guest, user, phoneNumber, phoneVerified, businessNumber = "+355692314919" }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const locationState = location.state;
@@ -36,7 +36,7 @@ export const OrderSent = ({ setGuest, guest, user, phoneVerified, businessNumber
   }
 
   const formatWhatsAppMessage = () => {
-    let message = "🛒 *New Order*%0A%0AProducts:%0A";
+    let message = "*New Order*%0A%0AProducts:%0A";
     orderProducts.forEach(([id, product]) => {
       const count = counts[id] || 1;
       message += `- ${product.productName} x${count}%0A`;
@@ -45,6 +45,10 @@ export const OrderSent = ({ setGuest, guest, user, phoneVerified, businessNumber
     if (orderComment) message += `%0ASpecial Instructions:%0A${orderComment}%0A`;
     if (deliveryAddress) message += `%0ADelivery Address:%0A${deliveryAddress}%0A`;
     if (deliveryFee) message += `%0ADelivery Fee: ${deliveryFee} leke%0A`;
+
+    // ✅ Add user phone here
+    const displayPhone = phoneNumber || "Not Provided";
+    message += `%0ACustomer Phone: ${displayPhone}%0A`;
 
     message += `%0ATotal: ${(totalPrice + deliveryFee).toFixed(2)} leke`;
     return message;
@@ -56,78 +60,88 @@ export const OrderSent = ({ setGuest, guest, user, phoneVerified, businessNumber
     <>
       <Header setGuest={setGuest} guest={guest} user={user} phoneVerified={phoneVerified} />
 
-      <div className="p-10 max-w-4xl mx-auto bg-white shadow-lg rounded-lg">
-        <h1 className="text-3xl font-bold mb-6 text-center">Order Confirmation</h1>
+      <div className="p-4 sm:p-8 max-w-4xl mx-auto bg-white shadow-lg rounded-lg">
+  <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-center">
+    Order Confirmation
+  </h1>
 
-        {/* Product List */}
-        <ul className="mb-6">
-          {orderProducts.map(([id, product]) => {
-            const count = counts[id] || 1;
-            return (
-              <li
-                key={id}
-                className="border-b border-gray-200 py-4 flex justify-between items-center"
-              >
-                <div>
-                  <p className="text-lg font-semibold">{product.productName}</p>
-                  {product.productDescription && (
-                    <p className="text-gray-600 text-sm">{product.productDescription}</p>
-                  )}
-                </div>
-                <div className="text-right">
-                  <p className="font-semibold">x{count}</p>
-                </div>
-              </li>
-            );
-          })}
-        </ul>
-
-        {/* Delivery Info */}
-        <div className="mb-6">
-          {orderComment && (
-            <p className="mb-2">
-              <span className="font-semibold">Special Instructions:</span> {orderComment}
+  {/* Product List */}
+  <ul className="mb-6 divide-y">
+    {orderProducts.map(([id, product]) => {
+      const count = counts[id] || 1;
+      return (
+        <li
+          key={id}
+          className="py-3 flex justify-between items-start gap-4"
+        >
+          <div className="flex-1">
+            <p className="text-lg font-semibold break-words">
+              {product.productName}
             </p>
-          )}
-          <p className="mb-1">
-            <span className="font-semibold">Delivery Address:</span> {deliveryAddress}
-          </p>
-          <p>
-            <span className="font-semibold">Delivery Fee:</span> {deliveryFee} leke
-          </p>
-        </div>
+            {product.productDescription && (
+              <p className="text-gray-600 text-sm break-words">
+                {product.productDescription}
+              </p>
+            )}
+          </div>
 
-        {/* Total */}
-        <div className="flex justify-between items-center mb-6 border-t border-gray-300 pt-4">
-          <p className="text-xl font-semibold">Total:</p>
-          <p className="text-2xl font-bold text-green-700">
-            {(totalPrice + deliveryFee).toFixed(0)} leke
+          <p className="font-semibold whitespace-nowrap">
+            x{count}
           </p>
-        </div>
+        </li>
+      );
+    })}
+  </ul>
 
-        {/* Action Buttons */}
-        <div className="flex flex-col md:flex-row gap-4 justify-center">
-          <a
-            href={whatsAppLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold text-center"
-          >
-            Send via WhatsApp
-          </a>
+  {/* Delivery + Phone Info */}
+  <div className="mb-6 space-y-1 text-sm sm:text-base">
+    {orderComment && (
+      <p>
+        <span className="font-semibold">Special Instructions:</span> {orderComment}
+      </p>
+    )}
+    <p>
+      <span className="font-semibold">Delivery Address:</span> {deliveryAddress}
+    </p>
+    <p>
+      <span className="font-semibold">Delivery Fee:</span> {deliveryFee} leke
+    </p>
+    <p>
+      <span className="font-semibold">Your Phone:</span> {phoneNumber || "Not Provided"}
+    </p>
+  </div>
 
-          <button
-            onClick={() =>
-              navigate("/products", {
-                state: { selectedProduct, counts, totalPrice, deliveryAddress, deliveryFee, orderComment }
-              })
-            }
-            className="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-lg font-semibold"
-          >
-            ← Return to Menu
-          </button>
-        </div>
-      </div>
+  {/* Total */}
+  <div className="flex justify-between items-center mb-6 border-t border-gray-300 pt-4">
+    <p className="text-lg sm:text-xl font-semibold">Total:</p>
+    <p className="text-xl sm:text-2xl font-bold text-green-700">
+      {(totalPrice + deliveryFee).toFixed(0)} leke
+    </p>
+  </div>
+
+  {/* ✅ Buttons Responsive */}
+  <div className="flex flex-col sm:flex-row gap-3 sm:gap-5 justify-center">
+    <a
+      href={whatsAppLink}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="bg-green-600 hover:bg-green-700 text-white px-5 py-3 rounded-lg font-semibold text-center w-full sm:w-auto"
+    >
+      Send via WhatsApp
+    </a>
+
+    <button
+      onClick={() =>
+        navigate("/products", {
+          state: { selectedProduct, counts, totalPrice, deliveryAddress, deliveryFee, orderComment }
+        })
+      }
+      className="bg-gray-700 hover:bg-gray-800 text-white px-5 py-3 rounded-lg font-semibold w-full sm:w-auto"
+    >
+      ← Return to Menu
+    </button>
+  </div>
+</div>
     </>
   );
 };

@@ -5,61 +5,80 @@ import { Link } from 'react-router-dom'
 import One from "../components/IMAGES/pjat e lezetshme.jpg"
 import Two from "../components/IMAGES/aboutus 1.webp"
 import Placeholder from "../components/IMAGES/new ring placeholder.jpeg"
-export const AboutUs = ({guest, setGuest, user,  phoneVerified, phoneNumber}) => {
+
+export const AboutUs = ({guest, setGuest, user, phoneVerified, phoneNumber}) => {
   return (
     <>
-    <Header  phoneVerified={phoneVerified} setGuest={setGuest} guest={guest} user={user} phoneNumber={phoneNumber}/>
-    <main className='ml-7 mr-7'>
-      <section className='flex flex-row m-9 font-bold bg-[#e8a033] border rounded-xl'>
-        <div className='m-5 flex flex-row justify-evenly'>
-        <img className='one-calibration' src={One} alt='' />
-          <div>  <h1 className='text-center text-3xl'>Welcome to Souvlaki Bros!</h1>
-            <p className='m-5 pt-4 '>
-            Founded in 2019 in the heart of Kashar, Tirana, Souvlaki Bros has quickly grown to become a cornerstone of the fast-food scene in the Astir province.
-What started as a humble dream to bring authentic Greek street flavors to Albania has now become a trusted name, known for its fresh ingredients, unmatched taste, 
-and community-first values.</p>
-            </div>
-          </div>
-      </section>
+      <Header
+        phoneVerified={phoneVerified}
+        setGuest={setGuest}
+        guest={guest}
+        user={user}
+        phoneNumber={phoneNumber}
+      />
 
-      <section className="m-9 border rounded border-color-[#dcdcdc] border-[5px]">
-          <div className='m-5 flex flex-row justify-evenly'>
-            <div>  
-                <h1 className='text-center text-3xl'>
-                  A Taste of Greece in Tirana
-                </h1>
-              <p className='m-5'>
-              At Souvlaki Bros, we bring the essence of Greek cuisine to life — starting with our signature souvlaki, of course, but going much further. Our menu is inspired by traditional
-Greek specialties, from rich pastas and creamy risottos to comforting homemade soups, all freshly prepared in-house.
-We pride ourselves on being the first to truly imitate and master the unique flavors of Greece, offering a dining experience that’s both familiar and unforgettable.  
+      <main className="mx-4 md:mx-7">
+        
+        {/* Section 1 */}
+        <section className="flex flex-col md:flex-row m-4 md:m-9 font-bold bg-[#e8a033] border rounded-xl">
+          <div className="m-4 md:m-5 flex flex-col md:flex-row items-center justify-evenly gap-5">
+            <img className="w-full md:w-1/2 rounded-xl object-cover" src={One} alt="" />
+            <div className="max-w-xl">
+              <h1 className="text-center text-2xl md:text-3xl">Welcome to Souvlaki Bros!</h1>
+              <p className="m-4 md:m-5 pt-2 md:pt-4 text-base md:text-lg">
+                Founded in 2019 in the heart of Kashar, Tirana, Souvlaki Bros has quickly grown to become a cornerstone 
+                of the fast-food scene in the Astir province. What started as a humble dream to bring authentic Greek street flavors 
+                to Albania has now become a trusted name…
               </p>
             </div>
-           <img src={Two} alt='two' />
-          </div>
-      </section>
-
-      <section className='flex flex-row m-9 font-bold bg-[#e8a033] border rounded-xl'>
-        <div className='m-5 flex flex-row justify-evenly'>
-          <div>  <h1 className='text-center text-3xl'>
-In the Heart of the New Tirana Ring</h1>
-            <p className='m-5'>
-           Located in the vibrant New Tirana Ring, Souvlaki Bros sits at the crossroads of modern living and traditional taste. Whether you're a local resident or just passing through,
-our restaurant is easy to find, always welcoming, and full of flavor.</p>
-            </div>
-           <img src={Placeholder} alt='' />
-          </div>
-      </section>
-
-      <section className='m-9 border rounded border-color-[#dcdcdc] border-[5px]'>
-          <div className='p-5 text-center'>
-            <p className='font-bold  text-3xl'>Service That Delivers</p>
-            <p className='text-xl m-4 '>Too busy to visit? No problem. Our delivery service is one of the best in the area — fast, reliable, and always bringing your order hot and fresh, straight to your door.</p>
-
-            <Link className='m-4 p-1 px-5 bg-[#e8a033] text-xl font-bold rounded-xl' to='/order-now'>Order Now</Link>
           </div>
         </section>
-    </main>
-    <Footer />
+
+        {/* Section 2 */}
+        <section className="m-4 md:m-9 border rounded border-[#dcdcdc] border-[5px]">
+          <div className="m-4 md:m-5 flex flex-col md:flex-row items-center justify-evenly gap-5">
+            <div className="max-w-xl">
+              <h1 className="text-center text-2xl md:text-3xl">A Taste of Greece in Tirana</h1>
+              <p className="m-4 md:m-5 text-base md:text-lg">
+                At Souvlaki Bros, we bring the essence of Greek cuisine to life — starting with our signature souvlaki…
+              </p>
+            </div>
+            <img className="w-full md:w-1/2 rounded-xl object-cover" src={Two} alt="two" />
+          </div>
+        </section>
+
+        {/* Section 3 */}
+        <section className="flex flex-col md:flex-row m-4 md:m-9 font-bold bg-[#e8a033] border rounded-xl">
+          <div className="m-4 md:m-5 flex flex-col md:flex-row items-center justify-evenly gap-5">
+            <div className="max-w-xl">
+              <h1 className="text-center text-2xl md:text-3xl">In the Heart of the New Tirana Ring</h1>
+              <p className="m-4 md:m-5 text-base md:text-lg">
+                Located in the vibrant New Tirana Ring, Souvlaki Bros sits at the crossroads…
+              </p>
+            </div>
+            <img className="w-full md:w-1/2 rounded-xl object-cover" src={Placeholder} alt="" />
+          </div>
+        </section>
+
+        {/* Section 4 */}
+        <section className="m-4 md:m-9 border rounded border-[#dcdcdc] border-[5px]">
+          <div className="p-5 text-center">
+            <p className="font-bold text-2xl md:text-3xl">Service That Delivers</p>
+            <p className="text-lg md:text-xl m-4">
+              Too busy to visit? No problem…
+            </p>
+            <Link
+              className="m-4 p-2 md:px-6 bg-[#e8a033] text-lg md:text-xl font-bold rounded-xl inline-block"
+              to="/order-now"
+            >
+              Order Now
+            </Link>
+          </div>
+        </section>
+
+      </main>
+
+      <Footer />
     </>
   )
 }

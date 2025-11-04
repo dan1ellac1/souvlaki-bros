@@ -10,111 +10,111 @@ import { getDatabase, ref, get } from "firebase/database";
 import { getAuth, signOut } from "firebase/auth";
 import app from "../firebaseConfig";
 
-
 export const Home = ({ user, setGuest, guest, phoneVerified, phoneNumber }) => {
   const [username, setUsername] = useState("");
   const navigate = useNavigate();
 
-  // Fetch username from Realtime Database
   useEffect(() => {
     const fetchUsername = async () => {
       if (user) {
         const db = getDatabase(app);
         const userRef = ref(db, "users/" + user.uid);
         const snap = await get(userRef);
-        if (snap.exists()) {
-          setUsername(snap.val().username); // <-- match the field name you saved
-        } else {
-          setUsername("User");
-        }
+        setUsername(snap.exists() ? snap.val().username : "User");
       }
     };
     fetchUsername();
   }, [user]);
 
-  // Logout handler
   const handleLogout = async () => {
     const auth = getAuth(app);
     await signOut(auth);
-    navigate("/login"); // redirect to login
-    setGuest(false)
+    setGuest(false);
+    navigate("/login");
   };
 
-  console.log(username)
   return (
     <>
-      <Header phoneVerified={phoneVerified} handleLogout={handleLogout} phoneNumber={phoneNumber} setGuest={setGuest} guest={guest} user={user}/>
-      <main className="ml-7 mr-7">
-        {/* Welcome and Logout */}
-        <div className="flex justify-between items-center m-9">
+      <Header
+        phoneVerified={phoneVerified}
+        handleLogout={handleLogout}
+        phoneNumber={phoneNumber}
+        setGuest={setGuest}
+        guest={guest}
+        user={user}
+      />
+
+      <main className="mx-4 md:mx-10 lg:mx-20">
+        
+        <div className="flex justify-between items-center my-9">
           <h2 className="text-3xl font-bold">Welcome {username}!</h2>
-          
         </div>
 
-        <section className="flex flex-row m-9 font-bold bg-[#e8a033] border rounded-xl">
-          <div className="m-5 flex flex-col justify-evenly">
+        {/* ABOUT SECTION */}
+        <section className="flex flex-col md:flex-row m-9 font-bold bg-[#e8a033] border rounded-xl overflow-hidden">
+          <div className="m-5 flex flex-col justify-evenly md:w-1/2">
             <h1 className="text-center text-3xl">Souvlaki Bros</h1>
-            <p className="m-5">
-              Craving something quick, tasty, and satisfying? At Souvlaki Bros,
-              we serve up classic fast food favorites made fresh and fast. From
-              juicy burgers and crispy fries to chicken sandwiches, wraps, and
-              refreshing drinks — we've got something for every appetite.
-              Whether you're dining in, grabbing takeout, or ordering online,
-              we're here to fuel your day with great flavor and fast service.
+            <p className="m-5 text-center md:text-left">
+              Craving something quick, tasty, and satisfying? At Souvlaki Bros, we serve up
+              classic fast food favorites made fresh and fast. From juicy burgers and crispy fries
+              to chicken sandwiches, wraps, and refreshing drinks — we've got something for every appetite.
             </p>
-            <Link
-              className="text-center border border-[2px] border-black text-2xl ml-[25%] mr-[25%] bg-black text-white rounded-3xl"
-              to="/about-us"
-            >
-              About Us
-            </Link>
+            <div className="flex justify-center md:justify-start">
+              <Link
+                className="text-center border border-[2px] border-black text-2xl bg-black text-white rounded-3xl px-8 py-2"
+                to="/about-us"
+              >
+                About Us
+              </Link>
+            </div>
           </div>
-          <div>
-            <img className="under-nav-calibration" src={UnderNav} alt="" />
+          <div className="md:w-1/2">
+            <img className="w-full h-full object-cover" src={UnderNav} alt="" />
           </div>
         </section>
 
+        {/* PRODUCTS */}
         <section className="m-9">
           <ProductShowcase />
         </section>
 
+        {/* CONTACT SECTION */}
         <section className="m-9 bg-[#e8a033] border rounded-xl">
-          <div className="m-3">
-            <h1 className="text-4xl font-bold text-center mb-5">Contact Us</h1>
-            <p className="text-lg font-bold text-center">
-              Souvlaki Bros is located on Rruga Mikel Maruli in the Astir/Yzberisht
-              area of Tirana. You can enjoy our delicious offerings daily
+          <div className="p-5 text-center">
+            <h1 className="text-4xl font-bold mb-5">Contact Us</h1>
+            <p className="text-lg font-bold">
+              Souvlaki Bros is located on Rruga Mikel Maruli in the Astir/Yzberisht area of Tirana.
             </p>
-            <p className="text-lg font-bold text-center">
-              We are open from 11:00 to 02:00 early in the morning, every day of the
-              week
-            </p>
+            <p className="text-lg font-bold">Open daily from 11:00 to 02:00</p>
           </div>
-          <div className="m-11 flex font-bold justify-between">
-            <div className="flex flex-col m-8 pt-6">
+
+          <div className="m-11 flex flex-col md:flex-row font-bold justify-between items-center">
+            <div className="flex flex-col m-8 pt-6 text-center md:text-left">
               <p className="text-4xl pb-3">Via phone number:</p>
-              <p className="text-2xl pb-8">
+              <p className="text-2xl pb-8 flex justify-center md:justify-start items-center gap-2">
                 <PhoneOutlined /> +355 68 741 2345
               </p>
 
               <p className="text-4xl pb-3">Via social media:</p>
-              <p className="text-2xl pb-8">
+              <p className="text-2xl pb-8 flex justify-center md:justify-start items-center gap-2">
                 <InstagramOutlined /> <FacebookOutlined /> Souvlaki Bros
               </p>
             </div>
-            <img src={BrosLogo} className="map-calibration" alt="" />
+
+            <img src={BrosLogo} className="map-calibration max-w-[300px] md:max-w-[400px]" alt="" />
           </div>
         </section>
 
+        {/* ORDER CTA */}
         <section className="m-9 border rounded border-color-[#dcdcdc] border-[5px]">
           <div className="p-5 text-center">
             <p className="font-bold text-3xl">Already decided on dinner?</p>
             <p className="text-xl m-4">
               Take a shortcut and order right here, right now! Our operators will
-              see to contact you ASAP!
+              contact you ASAP!
             </p>
             <Link
-              className="m-4 p-1 px-5 bg-[#e8a033] text-xl font-bold rounded-xl"
+              className="m-4 p-1 px-5 bg-[#e8a033] text-xl font-bold rounded-xl inline-block"
               to="/order-now"
             >
               Order Now
@@ -122,6 +122,7 @@ export const Home = ({ user, setGuest, guest, phoneVerified, phoneNumber }) => {
           </div>
         </section>
       </main>
+
       <Footer />
     </>
   );

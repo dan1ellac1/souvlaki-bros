@@ -126,11 +126,15 @@ export const FullMenu = ({ savedData }) => {
 
     return (
       <li
-        onClick={() => !isEditing && onSelect && onSelect(productId, item)}
-        className={`p-3 mb-3 rounded ${
-          onSelect ? "cursor-pointer hover:bg-gray-100" : ""
-        } ${selected ? "bg-green-200" : ""}`}
-      >
+      onClick={() => !isEditing && onSelect && onSelect(productId, item)}
+      className={`
+        p-3 md:p-4 
+        mb-3 
+        rounded 
+        ${onSelect ? "cursor-pointer hover:bg-gray-100" : ""}
+        ${selected ? "bg-green-200" : ""}
+      `}
+    >
         {isEditing ? (
           <>
             <input
@@ -202,9 +206,13 @@ export const FullMenu = ({ savedData }) => {
     if (!category) return <div className="p-6"></div>;
     return (
       <div
-        key={category}
-        className="p-6 border rounded border-[#dcdcdc] border-[3px]"
-      >
+      key={category}
+      className="
+        p-4 md:p-6 
+        border rounded border-[#dcdcdc] border-[3px]
+        bg-white
+      "
+    >
         <h1 className="text-3xl font-bold mb-2">{category}</h1>
         <ul>
           {Object.entries(items).map(([productId, item]) => (
@@ -237,22 +245,37 @@ export const FullMenu = ({ savedData }) => {
   if (loadingAuth) return <p>Loading...</p>;
 
   return (
-    <div className="m-9 p-7 bg-white rounded-md shadow-xl border-[#dcdcdc]">
-      {[row1, row2].map((row, i) => (
-        <div key={i} className="grid grid-cols-4 gap-6 mb-6">
-          {row.map(renderCategory)}
-        </div>
-      ))}
+    <div className="m-2 md:m-6 lg:m-9 p-4 md:p-7 bg-white rounded-md shadow-xl border-[#dcdcdc]">
 
-      {user && Object.keys(selectedProduct).length > 0 && (
-        <div className="mt-8">
-          <OrderShowcase
-            selectedProduct={selectedProduct}
-            counts={counts}
-            setCounts={setCounts}
-          />
-        </div>
-      )}
+  {[row1, row2].map((row, i) => (
+    <div
+      key={i}
+      className="
+        grid 
+        grid-cols-1 
+        sm:grid-cols-2 
+        lg:grid-cols-3 
+        xl:grid-cols-4 
+        gap-4 
+        md:gap-6 
+        mb-6
+      "
+    >
+      {row.map(renderCategory)}
     </div>
+  ))}
+
+  {user && Object.keys(selectedProduct).length > 0 && (
+    <div className="mt-8 w-full">
+      <OrderShowcase
+        selectedProduct={selectedProduct}
+        counts={counts}
+        setCounts={setCounts}
+      />
+    </div>
+  )}
+
+</div>
+
   );
 };
