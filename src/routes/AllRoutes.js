@@ -110,7 +110,7 @@ export const AllRoutes = ({ adminCheck, setAdminCheck }) => {
   path="/order-sent"
   element={verified
     ? phoneVerified
-      ? <OrderSent user={user} phoneNumber={phoneNumber} phoneVerified={phoneVerified} />
+      ? <OrderSent user={user} setGuest={setGuest} phoneNumber={phoneNumber} phoneVerified={phoneVerified} />
       : <Navigate to="/numberConfirmation" />
     : <Navigate to="/login" />
   }

@@ -50,53 +50,72 @@
     }
 
     return (
-      <div  className={styles.loginDiv}>
-        <div className={styles.loginManeuvers}>
-        <div></div>
-        <div  className={styles.loginSquare}>
-          <div className="flex flex-col m-4">
-        <Input  className="border-[2px] mt-2 text-black p-4 mr-2 rounded border-[#e76a12] text-xl"
-        type="text"   value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Username" />
-        <br />
+  <div className={styles.loginDiv}>
+  <div className="flex justify-center items-center min-h-screen px-4">
+    <div className="w-full max-w-md bg-white shadow-xl rounded-2xl p-6 border border-[#e76a12]/40">
+      
+      <h2 className="text-2xl font-bold text-center text-[#e76a12] mb-6">
+        Create Account
+      </h2>
 
-        <Input className="border-[2px] mt-2 text-black p-4 mr-2 rounded border-[#e76a12] text-xl" 
-        type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" />
-        <br />
+      <div className="flex flex-col gap-4">
+        
         <Input
-        className="border-[2px] mt-2 text-black p-4 mr-2 rounded border-[#e76a12] text-xl"
+          className="border-[2px] text-black p-3 rounded border-[#e76a12] text-lg"
+          type="text"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          placeholder="Username"
+        />
+
+        <Input
+          className="border-[2px] text-black p-3 rounded border-[#e76a12] text-lg"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Email"
+        />
+
+        <Input
+          className="border-[2px] text-black p-3 rounded border-[#e76a12] text-lg"
           type="password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)
-            
-          }
+          onChange={(e) => setPassword(e.target.value)}
           placeholder="Password"
         />
 
         <Input
-        className="border-[2px] mt-2 text-black p-4 mr-2 rounded border-[#e76a12] text-xl"
-          type="number"
+          className="border-[2px] text-black p-3 rounded border-[#e76a12] text-lg"
+          type="tel"
           value={number}
-          onChange={(e) => setNumber(e.target.value)
-            
-          }
+          onChange={(e) => setNumber(e.target.value)}
           placeholder="Phone Number"
         />
 
-        <br />
-        <Input  className="border-[2px] mt-2 text-black p-4 mr-2 rounded border-[#e76a12] text-xl" value="User" disabled />
+        <Input
+          className="border-[2px] text-black p-3 rounded border-gray-300 text-lg bg-gray-100"
+          value="User"
+          disabled
+        />
 
-        <button className="mt-10 bg-[#e76a12] p-4 font-bold text-white rounded border-[#dcdcdc]"
-        onClick={handleCreateUser}>Create Account</button>
+        <button
+          className="mt-4 bg-[#e76a12] hover:bg-[#c8590f] p-3 text-lg font-bold text-white rounded-xl w-full transition"
+          onClick={handleCreateUser}
+        >
+          Create Account
+        </button>
 
-        <Link className=" mt-2 bg-[#e76a12] p-4 font-bold text-white rounded border-[#dcdcdc]" to="/login">
+        <Link
+          to="/login"
+          className="text-center bg-gray-200 hover:bg-gray-300 p-3 text-lg font-bold text-black rounded-xl w-full transition"
+        >
           Return to Login
         </Link>
-        </div>
-        </div>
-        
-        <div></div>
-        </div>
       </div>
-      
-    )
+
+    </div>
+  </div>
+  </div>
+);
+
   }

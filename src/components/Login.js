@@ -68,7 +68,7 @@ export const Login = ({ setGuest, setVerified }) => {
   };
 
   return (
-    <div className={`${styles.loginDiv} flex justify-center items-center px-4`}>
+    <div className={`${styles.loginDiv} h-[100vh] flex justify-center items-center px-4`}>
       <div className="w-full max-w-md bg-white p-6 rounded-xl shadow-xl border border-gray-200 mt-8 mb-8">
         <h1 className="text-center text-3xl font-bold mb-6 text-[#e76a12]">Login</h1>
 
