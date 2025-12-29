@@ -115,7 +115,7 @@ export const Home = ({ user, setGuest, guest, phoneVerified, phoneNumber }) => {
             </p>
             <Link
               className="m-4 p-1 px-5 bg-[#e8a033] text-xl font-bold rounded-xl inline-block"
-              to="/order-now"
+              to="/products"
             >
               Order Now
             </Link>

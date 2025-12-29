@@ -65,11 +65,30 @@ export const Write = () => {
   if (loading) return <p>Loading...</p>
 
   // 🚫 Not logged in
-  if (!user) return <p className="p-3 m-11">Log In to Order Now!</p>
+  if (!user)
+  return (
+    <div className="p-6 m-11 text-center rounded-xl shadow-md border border-gray-200">
+      <p className="text-lg font-semibold tracking-wide">
+        Please log in to place your order
+      </p>
+      <p className="text-sm text-gray-500 mt-1">
+        Access your account to continue
+      </p>
+    </div>
+  )
 
-  // 🚫 Logged in but not admin
-  if (role !== "admin") return ;
-
+// 🚫 Logged in but not admin (regular user)
+if (role !== "admin")
+  return (
+    <div className="p-6 m-11 text-center rounded-xl shadow-md border border-gray-200">
+      <p className="text-lg font-semibold tracking-wide">
+        Please select the products for your order
+      </p>
+      <p className="text-sm text-gray-500 mt-1">
+        Browse the menu and add items to continue
+      </p>
+    </div>
+  ) 
   // ✅ Logged in & admin — show the form
   return (
     <div>
@@ -104,6 +123,8 @@ export const Write = () => {
         <option value="kitchen">Kitchen</option>
         <option value="kitchen/pasta">Pasta</option>
         <option value="kitchen/salads">Salads</option>
+        <option value="Sodas">Sodas</option>
+        <option value="Alcohol">Alcohol</option>
       </select>
       <br />
 
